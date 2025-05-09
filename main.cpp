@@ -1,3 +1,5 @@
+//itamarbabai98@gmail.com
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <string>
@@ -22,10 +24,24 @@ using namespace coup;
 
 
 int main() {
-    Game game{};
-    int numPlayers = 0;
-    vector<std::string> playerNames;
-    mainwin(numPlayers, playerNames);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Valgrind Test");
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear(sf::Color::Black);
+        window.display();
+    }
+
+    return 0;
+    // Game game{};
+    // int numPlayers = 0;
+    // vector<std::string> playerNames;
+    // mainwin(numPlayers, playerNames);
     
     //vector<Player*> players;
 
@@ -50,7 +66,7 @@ int main() {
     //     cout << player << " ";
     // }
     // cout << endl;
-    return 0;
+   // return 0;
 }
 
 void mainwin(int& numPlayers, vector<string>& players) {

@@ -26,7 +26,7 @@ namespace coup{
 
                 int coins() const;
                 std::string getName();
-                bool isAlive();
+
                 void undo( Player &player);
                 void gather();
                 void tax();
@@ -42,7 +42,26 @@ namespace coup{
                 int getLastCoinNum()const{
                     return coinsNum;
                 }
+                bool getPreventToArrest() const{
+                    return preventToArrest;
+                }
+                void setPreventToArrest(bool block){
+                    preventToArrest = block;
+                    if(block == false){
+                        game.setLastArrest("");
+                    }
+                }
+                void setPreventToBride(bool block){
+                    blockToBride = block;
+                }
+                void setIsAlived(bool alive){
+                    Alive = alive;
+                }
+                 bool getIsAlived(){
+                    return Alive;
+                }
                  ~Governor(){}
+
         
     };
 }

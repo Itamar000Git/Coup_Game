@@ -1,3 +1,5 @@
+//itamarbabai98@gmail.com
+
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -8,13 +10,7 @@
 #include "../HPP/Merchant.hpp"
 
 namespace coup{  
-//     Merchant::Merchant(Game &game1, const std::string &name1):Player(),name(name1),game(game1),
-//     coinsNum(0), role("Merchant"), Alive(true), playerTurn(0) {
-//        playerIndex= game.getNumOfPlayers();
-//        game.addPlayer(this);
-//        //game.getNumOfPlayers()++;
-//        // Initialize the player
-//    }
+
     Merchant::Merchant(Game &game1, const std::string &name1)
     : Player(game1, name1) { 
         this->role = "Merchant"; 
@@ -36,9 +32,7 @@ namespace coup{
     std::string Merchant::getRoll(){
         return role;
      }
-    bool Merchant::isAlive(){
-        return Alive;
-    }
+
     void Merchant::undo( Player &player){
         std::cout <<"undo with:" << name<< "that is"<< role<<std::endl;
     }
@@ -55,8 +49,14 @@ namespace coup{
             throw std::runtime_error("You are blocked");
             return;
         }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        if(coinsNum>=3){
+            coinsNum++;
+        }
         if(blockToBride==true){
-            setBlockToBride(false);
+            setPreventToBride(false);
             game.nextTurn();
             lastMove.push_back("gather");
             throw std::runtime_error("You are blocked by bride");
@@ -82,8 +82,14 @@ namespace coup{
             throw std::runtime_error("You are blocked");
             return;
         }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        if(coinsNum>=3){
+            coinsNum++;
+        }
         if(blockToBride==true){
-            setBlockToBride(false);
+            setPreventToBride(false);
             game.nextTurn();
             lastMove.push_back("tax");
             throw std::runtime_error("You are blocked by bride");
@@ -110,8 +116,14 @@ namespace coup{
             throw std::runtime_error("You dont have enough coins");
             return;
         }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        if(coinsNum>=3){
+            coinsNum++;
+        }
         if(blockToBride==true){
-            setBlockToBride(false);
+            setPreventToBride(false);
             game.nextTurn();
             lastMove.push_back("bride");
             throw std::runtime_error("You are blocked by bride");
@@ -136,16 +148,49 @@ namespace coup{
             throw std::runtime_error("You cant arrest a player with 0 coins");
             return;
         }
-        player.setLastCoinNum(num-1);
-        coinsNum=coinsNum+1;
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+
+        if(player.getIsAlived()==false){
+            throw std::runtime_error("You cant arrest a dead player");
+            return;
+        }
+        if(coinsNum>=3){
+            coinsNum++;
+        }
+        if(blockToBride==true){
+            setPreventToBride(false);
+            game.nextTurn();
+            lastMove.push_back("arrest");
+            throw std::runtime_error("You are blocked by bride");
+            return;
+        }
+
+        if(player.getRoll()=="General"){ //General get his coins back
+           
+            coinsNum=coinsNum+1;
+        }
+        else if(player.getRoll()=="Merchent"){
+            player.setLastCoinNum(num-2);
+        }
+        else{
+            player.setLastCoinNum(num-1);
+            coinsNum=coinsNum+1;
+        }
+
         game.setLastArrest(player.getName());
         game.nextTurn();
         lastMove.push_back("arrest");
-        std::cout <<"arrest with:" << name<< " that is "<< role<<std::endl;
+        std::cout << name<< " that is "<< role<<" arrest : "<< player.getName() <<" that is: "<< player.getRoll()<<std::endl;
+
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
-        std::cout<<"Player: "<< player.getName() << " coinsNum is: "<< num-1<<std::endl;
     }
     void Merchant::sanction(){
+
+        if(coinsNum>=3){
+            coinsNum++;
+        }
         std::cout <<"sanction with:" << name<< " that is"<< role<<std::endl;
     }
     void Merchant::coup( Player &player){
@@ -155,6 +200,24 @@ namespace coup{
         }
         if(coinsNum<7){
             throw std::runtime_error("You dont have enough coins");
+            return;
+        }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        
+        if(player.getIsAlived()==false){
+            throw std::runtime_error("You cant coup a dead player");
+            return;
+        }
+        if(coinsNum>=3){
+            coinsNum++;
+        }
+        if(blockToBride==true){
+            setPreventToBride(false);
+            game.nextTurn();
+            lastMove.push_back("coup");
+            throw std::runtime_error("You are blocked by bride");
             return;
         }
         coinsNum=coinsNum-7;

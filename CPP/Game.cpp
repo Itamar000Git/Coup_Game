@@ -1,3 +1,5 @@
+//itamarbabai98@gmail.com
+
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -34,7 +36,7 @@ namespace coup
     std::vector<std::string> Game::players(){
         std::vector<std::string> curPlayers;
         for(int i=0; i<board.size(); i++){
-            if(board[i]->isAlive() == true){
+            if(board[i]->getIsAlived() == true){
                 curPlayers.push_back(board[i]->getName());
             }
         }
@@ -43,10 +45,13 @@ namespace coup
 
 
     void Game::removePlayer(Player* player){ //when player removed is stull on the voard just not alive
-        for(int i=0; i< numOfPlayers; i++){
+        for(int i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
                 //board.erase(board.begin()+i);
                 numOfPlayers--;
+                if(numOfPlayers==1){
+                    winner();
+                }
                 return;
             }
         }
@@ -56,26 +61,45 @@ namespace coup
 
 
     void Game::nextTurn(){
-        if (players().size() <= 1) { 
-            throw std::runtime_error("Cannot proceed to the next turn: only one player remains.");
+        if (numOfPlayers <= 1) { 
+           return; // No need to proceed if there's only one player left
         }
         do {
             playerTurn = (playerTurn + 1) % board.size();
-        } while (!board[playerTurn]->isAlive());
+        } while (!board[playerTurn]->getIsAlived());
       // playerTurn= (playerTurn+1)%numOfPlayers;
     }
+    std::string Game::lastArrested(){
+        return lastArrest;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Game& game){
+        os << "Game status: " << std::endl;
+        for (size_t i = 0; i < game.board.size(); i++) {
+            os << game.board[i]->getName() << " is " 
+               << (game.board[i]->getIsAlived() ? "alive" : "dead") 
+               << " with " << game.board[i]->coins() << " coins"
+               << " playing as: "<< game.board[i]->getRoll() << std::endl;
+        }
+        os << "Next turn: " << game.board[game.playerTurn]->getName() << std::endl;
+        os << "Last arrested: " << game.lastArrest << std::endl;
+        return os;
+    }
+
+ 
 
 
     std::string Game::winner(){
         int count=0;
         int index=-1;
-        for(int i=0;i<numOfPlayers;i++){
-            if(board[i]->isAlive()==true){
+        for(int i=0;i<board.size();i++){
+            if(board[i]->getIsAlived()==true){
                 index=i;
                 count++;
             }
         }
         if(count==1){
+            std::cout << "The winner is: " << board[index]->getName() <<"!"<< std::endl;
             return board[index]->getName();
         }
         else if (count>1){

@@ -24,9 +24,10 @@ namespace coup{
 
         public:
             Baron(Game &game, const std::string &name1);
+            
                 int coins() const;
                 std::string getName();
-                bool isAlive();
+                //bool isAlive();
                 void undo( Player &player);
                 void gather();
                 void tax();
@@ -39,10 +40,29 @@ namespace coup{
                 int getLastCoinNum()const{
                     return lastcoinsNum;
                 }
+                void setPreventToArrest(bool block){
+                    preventToArrest = block;
+                    if(block == false){
+                        game.setLastArrest("");
+                    }
+                }
+
+                bool getPreventToArrest()const{
+                    return preventToArrest;
+                }
                 
                 std::string getRoll();
                 void setLastCoinNum(int num){
                     lastcoinsNum=num;
+                }
+                void setPreventToBride(bool block){
+                    blockToBride = block;
+                }
+                void setIsAlived(bool alive){
+                    Alive = alive;
+                }
+                 bool getIsAlived(){
+                    return Alive;
                 }
    
                  ~Baron(){

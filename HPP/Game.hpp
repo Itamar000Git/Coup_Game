@@ -30,12 +30,13 @@ namespace coup
             std::string winner();
             void removePlayer(Player* player);
             void nextTurn();
-            std::string lastArrested(){
-                return lastArrest;
-            }
+            std::string lastArrested();
             void setLastArrest(std::string name){
                 lastArrest=name;
             }
+            
+            friend std::ostream& operator<<(std::ostream& os, const Game& game);
+
         
 
             ~Game(){}
