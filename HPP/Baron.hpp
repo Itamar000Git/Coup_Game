@@ -12,6 +12,7 @@
 namespace coup{  
     class Baron: public Player{
         private:
+    
             int lastcoinsNum;
             // Game &game;
             // std::string name;
@@ -29,11 +30,11 @@ namespace coup{
                 std::string getName();
                 //bool isAlive();
                 void undo( Player &player);
-                void gather();
+                //void gather();
                 void tax();
                 void bride();
                 void arrest( Player &player);
-                void sanction();
+                void sanction( Player &player);
                 void coup( Player &player);
                 void invest();
                 void deleteLastMove();
@@ -63,6 +64,9 @@ namespace coup{
                 }
                  bool getIsAlived(){
                     return Alive;
+                }
+                void setIsBlocked(bool block){
+                    isBlocked = block;
                 }
    
                  ~Baron(){

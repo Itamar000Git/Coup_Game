@@ -47,6 +47,7 @@ namespace coup
     void Game::removePlayer(Player* player){ //when player removed is stull on the voard just not alive
         for(int i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
+                setCoupedPlayers(player);
                 //board.erase(board.begin()+i);
                 numOfPlayers--;
                 if(numOfPlayers==1){
@@ -110,6 +111,14 @@ namespace coup
         }
 
     }
-
+    // std::vector<Player*>& Game::getCoupedPlayers(){
+    //     return coupedPlayers;
+    // }
+    void Game::uncoupLastCoupedPlayer(){
+        if(coupedPlayers.size() > 0){
+            coupedPlayers.back()->setIsAlived(true);
+            coupedPlayers.pop_back();
+        }
+    }
 
 }

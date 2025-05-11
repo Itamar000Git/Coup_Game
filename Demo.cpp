@@ -65,11 +65,14 @@ int main() {
     } catch (const std::exception &e) {
         std::cerr << e.what() << '\n';
     }
+    
 
     cout << governor.coins() << endl; // Expected: 2
     cout << spy.coins() << endl; // Expected: 3
 
-     governor.undo(spy); // Governor undo tax 
+    cout << game_1 << endl; 
+
+    governor.undo(spy); // Governor undo tax 
      cout << spy.coins() << endl; // Expected: 1
 
     baron.tax();
@@ -161,7 +164,7 @@ int main() {
     general.tax(); // General tax
     cout<<general.coins()<<endl; // Expected: 3
     cout<<game_1.turn()<<endl; // Expected: Gilad (Judge)
-
+    general.gather(); // General gather
     judge.tax(); // Judge tax
   
     cout<<"try to prevent the spy from briding"<<endl;

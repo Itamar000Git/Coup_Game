@@ -24,49 +24,49 @@ using namespace coup;
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Valgrind Test");
+    // sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Valgrind Test");
 
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+    // while (window.isOpen()) {
+    //     sf::Event event;
+    //     while (window.pollEvent(event)) {
+    //         if (event.type == sf::Event::Closed)
+    //             window.close();
+    //     }
 
-        window.clear(sf::Color::Black);
-        window.display();
+    //     window.clear(sf::Color::Black);
+    //     window.display();
+    // }
+
+    // return 0;
+    Game game{};
+    int numPlayers = 0;
+    vector<std::string> playerNames;
+    mainwin(numPlayers, playerNames);
+    
+    vector<Player*> players;
+
+    for (int i = 0; i < numPlayers; ++i) {
+       // players.push_back(createRandomPlayer(game, playerNames[i]));
     }
 
-    return 0;
-    // Game game{};
-    // int numPlayers = 0;
-    // vector<std::string> playerNames;
-    // mainwin(numPlayers, playerNames);
-    
-    //vector<Player*> players;
 
-    // for (int i = 0; i < numPlayers; ++i) {
-    //    // players.push_back(createRandomPlayer(game, playerNames[i]));
-    // }
+    for (const auto &player : players) {
+        std::cout << player->getName() << " is a " << player->getRoll() << std::endl;
+    }
 
-    // // הדפסת סוגי השחקנים
-    // for (const auto &player : players) {
-    //     std::cout << player->getName() << " is a " << player->getRoll() << std::endl;
-    // }
-
-    // // שחרור זיכרון
-    // for (auto player : players) {
-    //     delete player;
-    // }
+   
+    for (auto player : players) {
+        delete player;
+    }
 
     
-    // cout << "Number of players: " << numPlayers << endl;
-    // cout << "Players: ";
-    // for (const auto& player : players) {
-    //     cout << player << " ";
-    // }
-    // cout << endl;
-   // return 0;
+    cout << "Number of players: " << numPlayers << endl;
+    cout << "Players: ";
+    for (const auto& player : players) {
+        cout << player << " ";
+    }
+    cout << endl;
+   return 0;
 }
 
 void mainwin(int& numPlayers, vector<string>& players) {

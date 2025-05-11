@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
 //#include "Player.hpp"
 namespace coup
 {  
@@ -19,6 +20,7 @@ namespace coup
             int numOfPlayers;
             int gameInit;
             std::string lastArrest;
+            std::vector<Player*> coupedPlayers;
             //string currentTurn;
     
         public:
@@ -27,6 +29,11 @@ namespace coup
             int& getNumOfPlayers();
             std::string turn();
             std::vector<std::string> players();
+            //std::vector<Player*>& getCoupedPlayers();
+            void setCoupedPlayers(Player* player){
+                coupedPlayers.push_back(player);
+            }
+            void uncoupLastCoupedPlayer();
             std::string winner();
             void removePlayer(Player* player);
             void nextTurn();

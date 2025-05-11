@@ -27,11 +27,11 @@ namespace coup{
                 std::string getName();
               
                 void undo( Player &player);
-                void gather();
+                //void gather();
                 void tax();
                 void bride();
                 void arrest( Player &player);
-                void sanction();
+                void sanction(Player &player);
                 void coup( Player &player);
                 void deleteLastMove();
                 std::string getRoll();

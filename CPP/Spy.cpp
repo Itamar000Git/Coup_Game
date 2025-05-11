@@ -25,8 +25,11 @@ namespace coup{
         Alive = true;
         coinsNum = 0;   
         playerTurn = 0;
-    
+        
         isBlocked = false;
+        freeMoves=0;
+        blockToBride=false;
+        preventToArrest=false;
     }
 
     int Spy::coins() const{//returns the number of coins the player has
@@ -44,35 +47,41 @@ namespace coup{
     }
 
 
-    void Spy::gather(){
-        if(game.turn()!=name){
-            throw std::runtime_error("This is not your turn");
-            return;
-        }
-        if(coinsNum>=10){
-            throw std::runtime_error("You have too many coins you need to coup");
-            return;
-        }
-        if(isBlocked==true){
-            throw std::runtime_error("You are blocked");
-            return;
-        }
-        if(preventToArrest==true){
-            setPreventToArrest(false);
-        }
-        if(blockToBride==true){
-            setPreventToBride(false);
-            game.nextTurn();
-            lastMove.push_back("gather");
-            throw std::runtime_error("You are blocked by bride");
-            return;
-        }
-        coinsNum++; //need to add check if there is a block
-        std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
-        std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
-        game.nextTurn();
-        lastMove.push_back("gather");
-    }
+    // void Spy::gather(){
+    //     if(game.turn()!=name){
+    //         throw std::runtime_error("This is not your turn");
+    //         return;
+    //     }
+    //     if(coinsNum>=10){
+    //         throw std::runtime_error("You have too many coins you need to coup");
+    //         return;
+    //     }
+    //     if(isBlocked==true){
+    //         throw std::runtime_error("You are blocked");
+    //         return;
+    //     }
+    //     if(preventToArrest==true){
+    //         setPreventToArrest(false);
+    //     }
+    //     if(blockToBride==true){
+    //         setPreventToBride(false);
+    //         game.nextTurn();
+    //         freeMoves=0;
+    //         lastMove.push_back("gather");
+    //         throw std::runtime_error("You are blocked by bride");
+    //         return;
+    //     }
+    //     coinsNum++; //need to add check if there is a block
+    //     std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
+    //     std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
+    //     if(freeMoves>0){
+    //         freeMoves--;
+    //     }
+    //     else{
+    //         game.nextTurn();
+    //     }
+    //     lastMove.push_back("gather");
+    // }
 
     void Spy::tax(){
         if(game.turn()!=name){
@@ -93,6 +102,7 @@ namespace coup{
         if(blockToBride==true){
             setPreventToBride(false);
             game.nextTurn();
+            freeMoves=0;
             lastMove.push_back("tax");
             throw std::runtime_error("You are blocked by bride");
             return;
@@ -100,7 +110,12 @@ namespace coup{
         coinsNum+=2; 
         std::cout <<"tax with:" << name<< " that is"<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
-        game.nextTurn();   
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }  
         lastMove.push_back("tax");
      }
 
@@ -123,12 +138,14 @@ namespace coup{
         if(blockToBride==true){
             setPreventToBride(false);
             game.nextTurn();
+            freeMoves=0;
             lastMove.push_back("bride");
             throw std::runtime_error("You are blocked by bride");
             return;
         }
         coinsNum=coinsNum-4;
-       
+        freeMoves=1;
+
         std::cout <<"bride with:" << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
     }
@@ -156,6 +173,7 @@ namespace coup{
         if(blockToBride==true){
             setPreventToBride(false);
             game.nextTurn();
+            freeMoves=0;
             lastMove.push_back("arrest");
             throw std::runtime_error("You are blocked by bride");
             return;
@@ -163,7 +181,7 @@ namespace coup{
 
         if(player.getRoll()=="General"){ //General get his coins back
            
-            coinsNum=coinsNum+1;
+            std::cout<<"General get his coins back"<<std::endl;
         }
         else if(player.getRoll()=="Merchent"){
             player.setLastCoinNum(num-2);
@@ -174,14 +192,62 @@ namespace coup{
         }
 
         game.setLastArrest(player.getName());
-        game.nextTurn();
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }
         lastMove.push_back("arrest");
         std::cout << name<< " that is "<< role<<" arrest : "<< player.getName() <<" that is: "<< player.getRoll()<<std::endl;
 
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
     }
-    void Spy::sanction(){
-        std::cout <<"sanction with:" << name<< " that is"<< role<<std::endl;
+    void Spy::sanction(Player &player){
+        if(game.turn()!=name){
+            throw std::runtime_error("This is not your turn");
+            return;
+        }
+        if(player.getIsAlived()==false){
+            throw std::runtime_error("You cant arrest a dead player");
+            return;
+        }        
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        if(blockToBride==true){
+            setPreventToBride(false);
+            freeMoves=0;
+            game.nextTurn();
+            lastMove.push_back("arrest");
+            throw std::runtime_error("You are blocked by bride");
+            return;
+        }
+        int num=player.getLastCoinNum();
+        int lim=3;
+        if(player.getRoll()=="judge"){
+            lim=4;
+        }
+        if(player.getRoll()=="Baron"){ //Baron get his coins back
+            player.setLastCoinNum(player.getLastCoinNum()+1);
+        }
+        if(num<lim){
+            throw std::runtime_error("You dont have enough coins");
+            return;
+
+        }
+        coinsNum=coinsNum-lim;
+
+
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }
+        lastMove.push_back("sanction");
+
+        std::cout <<"sanction with:" << name<< " that is "<< role<<std::endl;
     }
     void Spy::coup( Player &player){
         if(game.turn()!=name){
@@ -202,6 +268,7 @@ namespace coup{
         if(blockToBride==true){
             setPreventToBride(false);
             game.nextTurn();
+            freeMoves=0;
             lastMove.push_back("coup");
             throw std::runtime_error("You are blocked by bride");
             return;
@@ -214,7 +281,12 @@ namespace coup{
         std::cout<<"Player: "<< player.getName() << " is dead"<<std::endl;
         game.removePlayer(&player);
 
-        game.nextTurn();
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }
         lastMove.push_back("coup"); std::cout <<"coup with:" << name<< " hat is"<< role<<std::endl;
     }
 }

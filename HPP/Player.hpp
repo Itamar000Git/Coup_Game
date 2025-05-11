@@ -13,6 +13,7 @@ namespace coup{
             Game &game;
             std::string name;
             int coinsNum;
+            int lastcoinsNum;
             std::string role;
             bool Alive;
             int playerIndex;
@@ -21,6 +22,7 @@ namespace coup{
             bool isBlocked;
             bool blockToBride;
             bool preventToArrest;
+            int freeMoves;
     
         public:
             Player(Game &game, const std::string &name)
@@ -31,7 +33,7 @@ namespace coup{
                   role(other.role), Alive(other.Alive), playerIndex(other.playerIndex), 
                   playerTurn(other.playerTurn), lastMove(other.lastMove), 
                   isBlocked(other.isBlocked), blockToBride(other.blockToBride), 
-                  preventToArrest(other.preventToArrest) {}
+                  preventToArrest(other.preventToArrest), freeMoves(other.freeMoves),lastcoinsNum(other.lastcoinsNum) {}
                   
             //Player();
             virtual bool operator==(Player &player){
@@ -42,19 +44,22 @@ namespace coup{
             virtual std::string getRoll()=0;
             //virtual bool isAlive()=0;
             virtual void undo(  Player &player)=0;
-            virtual void gather()=0;
+            virtual void gather();
             virtual void tax()=0;
             virtual void bride()=0;
             virtual void arrest( Player &player)=0;
-            virtual void sanction()=0;
+            virtual void sanction(Player &player)=0;
             virtual void coup( Player &player)=0;
             virtual  void setLastCoinNum(int num)=0;
             virtual int getLastCoinNum()const=0;
             virtual bool getPreventToArrest()const=0;
             virtual void setPreventToArrest(bool block)=0;
             virtual void setPreventToBride(bool block)=0;
-            virtual void setIsAlived(bool alive)=0;
+            virtual void setIsAlived(bool alive){
+                Alive = alive;
+            }
             virtual bool getIsAlived()=0;
+            virtual void starter(){};
 
            // virtual void gotArrested()=0;
             const std::vector<std::string>& getLastMove() const {
@@ -62,6 +67,9 @@ namespace coup{
             }
             const bool& isBlockToBride() const{
                 return blockToBride;
+            }
+            void skipTurn(){
+                game.nextTurn();
             }
             // void setBlockToBride(bool block){
             //     blockToBride = block;
