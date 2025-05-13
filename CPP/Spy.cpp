@@ -52,7 +52,7 @@ namespace coup{
     //         throw std::runtime_error("This is not your turn");
     //         return;
     //     }
-    //     if(coinsNum>=10){
+    //     if(coinsNum>=10){    
     //         throw std::runtime_error("You have too many coins you need to coup");
     //         return;
     //     }
