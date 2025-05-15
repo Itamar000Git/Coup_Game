@@ -35,7 +35,7 @@ namespace coup
 
     std::vector<std::string> Game::players(){
         std::vector<std::string> curPlayers;
-        for(int i=0; i<board.size(); i++){
+        for(size_t i=0; i<board.size(); i++){
             if(board[i]->getIsAlived() == true){
                 curPlayers.push_back(board[i]->getName());
             }
@@ -45,7 +45,7 @@ namespace coup
 
 
     void Game::removePlayer(Player* player){ //when player removed is stull on the voard just not alive
-        for(int i=0; i< board.size(); i++){
+        for(size_t i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
                 setCoupedPlayers(player);
                 //board.erase(board.begin()+i);
@@ -93,7 +93,7 @@ namespace coup
     std::string Game::winner(){
         int count=0;
         int index=-1;
-        for(int i=0;i<board.size();i++){
+        for(size_t i=0;i<board.size();i++){
             if(board[i]->getIsAlived()==true){
                 index=i;
                 count++;

@@ -22,17 +22,28 @@ namespace coup{
 
         public:
                 General(Game &game, const std::string &name1);
+                using Player::operator=; // Bring base class operator= into scope
+                General &operator=(const General &other) {
+                if (this == &other) {
+                    return *this;
+                }
+                Player::operator=(other); // Call base class assignment operator
+                return *this;
+                }
                 int coins() const;
                 std::string getName();
                 void undo( Player &player);
                 //void gather();
-                void tax();
-                void bride();
-                void arrest( Player &player);
-                void sanction(Player &player);
-                void coup( Player &player);
+                //void tax();
+                //void bride();
+               // void arrest( Player &player);
+               //void sanction(Player &player);
+               // void coup( Player &player);
                 void deleteLastMove();
                 std::string getRoll();
+                void setIsBlocked(bool block){
+                    isBlocked = block;
+                }
                 void setLastCoinNum(int num){
                     coinsNum=num;
                 }

@@ -23,18 +23,29 @@ namespace coup{
 
         public:
                 Spy(Game &game, const std::string &name1);
+                using Player::operator=; // Bring base class operator= into scope
+                Spy &operator=(const Spy &other) {
+                if (this == &other) {
+                    return *this;
+                }
+                Player::operator=(other); // Call base class assignment operator
+                return *this;
+            }
                 int coins() const;
                 std::string getName();
               
                 void undo( Player &player);
                 //void gather();
-                void tax();
-                void bride();
-                void arrest( Player &player);
-                void sanction(Player &player);
-                void coup( Player &player);
+               // void tax();
+                //void bride();
+               // void arrest( Player &player);
+                //void sanction(Player &player);
+                //void coup( Player &player);
                 void deleteLastMove();
                 std::string getRoll();
+                void setIsBlocked(bool block){
+                    isBlocked = block;
+                }
                 int watchNumOfCoins(Player &player) const{
                    return player.coins();
                 }

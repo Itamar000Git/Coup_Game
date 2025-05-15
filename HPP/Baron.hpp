@@ -25,19 +25,32 @@ namespace coup{
 
         public:
             Baron(Game &game, const std::string &name1);
-            
+            Baron(const Baron &other): Player(other) {}
+                 
+            using Player::operator=; // Bring base class operator= into scope
+            Baron &operator=(const Baron &other) {
+                if (this == &other) {
+                    return *this;
+                }
+                Player::operator=(other); // Call base class assignment operator
+                return *this;
+            }
                 int coins() const;
                 std::string getName();
+            
                 //bool isAlive();
                 void undo( Player &player);
                 //void gather();
                 void tax();
-                void bride();
-                void arrest( Player &player);
-                void sanction( Player &player);
-                void coup( Player &player);
+                //void bride();
+                //void arrest( Player &player);
+                //void sanction( Player &player);
+                //void coup( Player &player);
                 void invest();
                 void deleteLastMove();
+                // int getTaxNum()const{
+                //     return 2;
+                // }
                 int getLastCoinNum()const{
                     return lastcoinsNum;
                 }
@@ -68,6 +81,7 @@ namespace coup{
                 void setIsBlocked(bool block){
                     isBlocked = block;
                 }
+                
    
                  ~Baron(){
 

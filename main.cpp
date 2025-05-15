@@ -24,34 +24,24 @@ using namespace coup;
 
 
 int main() {
-    // sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Valgrind Test");
 
-    // while (window.isOpen()) {
-    //     sf::Event event;
-    //     while (window.pollEvent(event)) {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-    //     }
-
-    //     window.clear(sf::Color::Black);
-    //     window.display();
-    // }
-
-    // return 0;
-    Game game{};
+    Game game_2{};
     int numPlayers = 0;
     vector<std::string> playerNames;
     mainwin(numPlayers, playerNames);
     
-    vector<Player*> players;
-
+    vector<Player*> players(numPlayers);
     for (int i = 0; i < numPlayers; ++i) {
-       // players.push_back(createRandomPlayer(game, playerNames[i]));
+        players[i] = nullptr;
+    }
+    std::cout << "Number of players: " << numPlayers << std::endl;
+    for (int i = 0; i < numPlayers; ++i) {
+        players[i]=drawCard(playerNames[i], game_2);
     }
 
 
-    for (const auto &player : players) {
-        std::cout << player->getName() << " is a " << player->getRoll() << std::endl;
+    for (int i = 0; i < numPlayers; ++i) {
+        std::cout << players[i]->getName() << " is a " << players[i]->getRoll() << std::endl;
     }
 
    
@@ -68,6 +58,21 @@ int main() {
     cout << endl;
    return 0;
 }
+
+Player* drawCard(std::string name, Game &game) {
+    int randomNum = rand() % 6; // Random number between 0 and 5
+    switch (randomNum) {
+        case 0: return new Baron(game, name);
+        case 1: return new General(game, name);
+        case 2: return new Governor(game, name);
+        case 3: return new Judge(game, name);
+        case 4: return new Merchant(game, name);
+        case 5: return new Spy(game, name);
+    }
+   
+    //return Player; // Default case, should not happen
+}
+
 
 void mainwin(int& numPlayers, vector<string>& players) {
     sf::RenderWindow mainwindow(sf::VideoMode(800, 600), "Coup");
@@ -313,22 +318,3 @@ void get_members(int& num, vector<string>& players) {
     return ;
 }
 
-// Player* createRandomPlayer(Game &game, const std::string &name) {
-//     GameRolls roll = drawCard(); 
-//     switch (roll) {
-//         case GameRolls::Baron:
-//             return new Baron(game, name);
-//         case GameRolls::General:
-//             return new General(game, name);
-//         case GameRolls::Governor:
-//             return new Governor(game, name);
-//         case GameRolls::Judge:
-//             return new Judge(game, name);
-//         case GameRolls::Merchant:
-//             return new Merchant(game, name);
-//         case GameRolls::Spy:
-//             return new Spy(game, name);
-//         default:
-//             throw std::runtime_error("Unknown roll");
-//     }
-//  }

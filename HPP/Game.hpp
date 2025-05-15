@@ -44,6 +44,7 @@ namespace coup
             
             friend std::ostream& operator<<(std::ostream& os, const Game& game);
 
+            
         
 
             ~Game(){}

@@ -55,11 +55,16 @@
         "map": "cpp",
         "set": "cpp"
     },
-    "makefile.makefilePath": "/home/itamar/projects_CPP/CPP_EX3_25-main/makefile",
+    "makefile.makefilePath": "/home/itamar/projects_CPP/Coup_game/makefile",
     "makefile.launchConfigurations": [
         {
             "cwd": "/home/itamar/projects_CPP/CPP_EX3_25-main",
             "binaryPath": "/home/itamar/projects_CPP/CPP_EX3_25-main/demo",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/home/itamar/projects_CPP/Coup_game",
+            "binaryPath": "/home/itamar/projects_CPP/Coup_game/main",
             "binaryArgs": []
         }
     ]
