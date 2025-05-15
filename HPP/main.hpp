@@ -15,6 +15,7 @@ namespace coup {
 void mainwin(int& numPlayers, vector<string>& players);
 void signIn(int& numPlayers, vector<string>& players);
 void get_members(int& numPlayers, vector<string>& players);
+void displayCoupBoard(const vector<Player*>& players);
 enum class GameRolls { 
     Baron, General, Governor, Judge, Merchant, Spy 
 };

@@ -99,6 +99,7 @@ public:
             virtual void arrest( Player &player);
             virtual void sanction(Player &player);
             virtual void coup( Player &player);
+            virtual void invest(){}
             virtual void setIsBlocked(bool block)=0;
             virtual  void setLastCoinNum(int num)=0;
             virtual int getLastCoinNum()const=0;
