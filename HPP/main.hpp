@@ -15,11 +15,11 @@ namespace coup {
 void mainwin(int& numPlayers, vector<string>& players);
 void signIn(int& numPlayers, vector<string>& players);
 void get_members(int& numPlayers, vector<string>& players);
-void displayCoupBoard(const vector<Player*>& players);
+void displayCoupBoard(const vector<Player*>& players, Game &game);
 enum class GameRolls { 
     Baron, General, Governor, Judge, Merchant, Spy 
 };
 coup::Player* drawCard(std::string name, Game &game);
-
+ void updateCoinTexts(std::vector<sf::Text>& coinTexts, const vector<Player*>& players);
 
 #endif
