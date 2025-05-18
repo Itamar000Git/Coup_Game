@@ -35,6 +35,12 @@ namespace coup{
                 std::string getName();
               
                 void undo( Player &player);
+                int getCoins(Player &player) const{
+                    if(player.getIsAlived() == false){
+                        throw std::runtime_error("You cant see a dead player coins");
+                    }
+                    return player.coins();
+                }
                 //void gather();
                // void tax();
                 //void bride();

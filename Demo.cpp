@@ -231,6 +231,17 @@ int main() {
     cout<<endl;
     cout<<game_1<<endl;
 
+    cout<<spy.getCoins(general)<<endl; // Spy get coins from baron
+
+    try{
+        spy.getCoins(governor); // Spy get coins from baron
+    }
+    catch (const std::exception &e) {
+        std::cerr << e.what() << '\n';
+    }
+
+
+
     spy.tax(); // Spy tax
 
     cout<<"/////Trying to play with dead player"<<endl;

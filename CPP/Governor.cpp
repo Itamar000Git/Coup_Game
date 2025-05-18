@@ -63,9 +63,19 @@ namespace coup{
 
             Baron &baron = static_cast<Baron&>(player);
             int num = baron.getLastCoinNum(); 
+            if(num<2){
+                throw std::runtime_error("Player dont have enough coins");
+                return;
+            }
+            std::cout<<"num is: "<<num<<std::endl;
             baron.setLastCoinNum(num);
+            std::cout<<"baron coins: "<<baron.coins()<<std::endl;
         }
         else{
+            if(player.coins()<2){
+                throw std::runtime_error("Player dont have enough coins");
+                return;
+            }
 
             player.setLastCoinNum(player.coins()-2); //undo tax -2 coins
         }

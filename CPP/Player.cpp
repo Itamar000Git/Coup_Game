@@ -66,7 +66,7 @@ namespace coup
             throw std::runtime_error("You are blocked by bride");
         }
         starter();
-        lastcoinsNum=coinsNum;
+        //lastcoinsNum=coinsNum;
         coinsNum++; //need to add check if there is a block
         std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
@@ -160,7 +160,7 @@ namespace coup
         if(player.getIsAlived()==false){
             throw std::runtime_error("You cant arrest a dead player");
         }
-        int num=player.getLastCoinNum();
+        int num=player.coins();
         if(num==0){
             throw std::runtime_error("You cant arrest a player with 0 coins");
         }
@@ -296,4 +296,32 @@ namespace coup
     }
 
 
+    void Player::skipTurn(){
+        if(game.turn()!=name){
+            throw std::runtime_error("This is not your turn");
+        }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+        if(isBlocked==true){
+            setIsBlocked(false);
+        }
+        if(blockToBride==true){
+            setPreventToBride(false);
+            freeMoves=0;
+            game.nextTurn();
+            lastMove.push_back("arrest");
+            throw std::runtime_error("You are blocked by bride");
+        }
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }
+        lastMove.push_back("skip");
+        std::cout <<"skip with:" << name<< " that is "<< role<<std::endl;
+        std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
+
+    }
 }

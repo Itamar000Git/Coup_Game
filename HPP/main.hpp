@@ -16,6 +16,10 @@ void mainwin(int& numPlayers, vector<string>& players);
 void signIn(int& numPlayers, vector<string>& players);
 void get_members(int& numPlayers, vector<string>& players);
 void displayCoupBoard(const vector<Player*>& players, Game &game);
+void displayError(const std::string& errorMessage);
+Player* selectPlayerForAction(const std::vector<Player*>& players, Player* currentPlayer);
+void updateAliveTexts(const std::vector<Player*>& aliveTexts,const vector<Player*>& players);
+void displayCoins(const Player* player);
 enum class GameRolls { 
     Baron, General, Governor, Judge, Merchant, Spy 
 };

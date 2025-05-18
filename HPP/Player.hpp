@@ -106,6 +106,7 @@ public:
             virtual bool getPreventToArrest()const=0;
             virtual void setPreventToArrest(bool block)=0;
             virtual void setPreventToBride(bool block)=0;
+            //void skipTurn();
             // virtual int getTaxNum()const{
             //     return 2;
             // }
@@ -122,9 +123,8 @@ public:
             const bool& isBlockToBride() const{
                 return blockToBride;
             }
-            void skipTurn(){
-                game.nextTurn();
-            }
+            virtual void skipTurn();
+
             // void setBlockToBride(bool block){
             //     blockToBride = block;
             // }

@@ -40,9 +40,9 @@ int main() {
 
     //boardwin(players, numPlayers, game_2);
      displayCoupBoard(players,game_2);
-    for (int i = 0; i < numPlayers; ++i) {
-        std::cout << players[i]->getName() << " is a " << players[i]->getRoll() << std::endl;
-    }
+    // for (int i = 0; i < numPlayers; ++i) {
+    //     std::cout << players[i]->getName() << " is a " << players[i]->getRoll() << std::endl;
+    // }
 
    
     for (auto player : players) {
@@ -352,6 +352,32 @@ void get_members(int& num, std::vector<std::string>& players) {
         window.display();
     }
 }
+    void displayCoins(const Player* player){
+        sf::RenderWindow window(sf::VideoMode(300, 200), "Player Coins");
+        sf::Font font;
+        if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+            std::cerr << "Failed to load font\n";
+            return;
+        }
+
+        sf::Text text("Coins: " + std::to_string(player->coins()), font, 24);
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(50, 50);
+
+        while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+            }
+
+            window.clear(sf::Color(255, 255, 255));
+            window.draw(text);
+            window.display();
+        }
+        window.close();
+    }
+
 
     void updateCoinTexts(std::vector<sf::Text>& coinTexts, const vector<Player*>& players) {
         for (size_t i = 0; i < players.size(); ++i) {
@@ -359,8 +385,21 @@ void get_members(int& num, std::vector<std::string>& players) {
         }
     }
 
+    void updateAliveTexts(std::vector<sf::Text>& aliveTexts,const vector<Player*>& players){
+        for (size_t i = 0; i < players.size(); ++i) {
+            if (players[i]->getIsAlived()) {
+                aliveTexts[i].setString("Alive");
+                aliveTexts[i].setFillColor(sf::Color::Green);
+            } else {
+                aliveTexts[i].setString("Dead");
+                aliveTexts[i].setFillColor(sf::Color::Red);
+
+            }
+        }
+    }
+
 void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
-    sf::RenderWindow window(sf::VideoMode(1400, 250 + players.size() * 80), "Coup Board");
+    sf::RenderWindow window(sf::VideoMode(1450, 250 + players.size() * 80), "Coup Board");
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
         std::cerr << "Failed to load font\n";
@@ -374,8 +413,10 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     sf::Text title("Coup Board", font, 30);
     title.setFillColor(sf::Color::Black);
     title.setPosition(750 - title.getGlobalBounds().width / 2, 20);
-     std::vector<sf::Text> coinTexts(players.size());
+    std::vector<sf::Text> coinTexts(players.size());
     std::vector<sf::Text> playerTexts(players.size());
+    std::vector<sf::Text> aliveTexts(players.size());
+
     std::vector<sf::RectangleShape> gatherButtons(players.size());
     std::vector<sf::RectangleShape> taxButtons(players.size());
     std::vector<sf::RectangleShape> bribeButtons(players.size());
@@ -396,128 +437,152 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     std::vector<sf::Text> prevArrestTexts(players.size());
     std::vector<sf::RectangleShape> undoButtons(players.size());
     std::vector<sf::Text> undoTexts(players.size());
+    std::vector<sf::RectangleShape> skipButtons(players.size());
+    std::vector<sf::Text> skipTexts(players.size());
 
 
     
     for (size_t i = 0; i < players.size(); ++i) {
         std::string playerInfo = players[i]->getName() + " - " + players[i]->getRoll();
+
+        if (players[i]->getIsAlived()) {
+            aliveTexts[i].setString("Alive");
+             aliveTexts[i].setFillColor(sf::Color::Green);
+        } else {
+            aliveTexts[i].setString("Dead");
+            aliveTexts[i].setFillColor(sf::Color::Red);
+        }
+        aliveTexts[i].setFont(font);
+        aliveTexts[i].setCharacterSize(20);
+        aliveTexts[i].setPosition(30, 80 + i * 80);
+
         playerTexts[i].setFont(font);
         playerTexts[i].setCharacterSize(20);
         playerTexts[i].setFillColor(sf::Color::Black);
         playerTexts[i].setString(playerInfo);
-        playerTexts[i].setPosition(50, 80 + i * 80);
+        playerTexts[i].setPosition(100, 80 + i * 80);
 
         coinTexts[i].setFont(font);
         coinTexts[i].setCharacterSize(18);
         coinTexts[i].setFillColor(sf::Color::Blue);
         coinTexts[i].setString("Coins: " + std::to_string(players[i]->coins()));
-        coinTexts[i].setPosition(200, 80 + i * 80);
+        coinTexts[i].setPosition(250, 80 + i * 80);
 
         gatherButtons[i].setSize(sf::Vector2f(110, 40));
         gatherButtons[i].setFillColor(sf::Color(180, 180, 250));
-        gatherButtons[i].setPosition(300, 80 + i * 80);
+        gatherButtons[i].setPosition(350, 80 + i * 80);
 
         gatherTexts[i].setFont(font);
         gatherTexts[i].setCharacterSize(18);
         gatherTexts[i].setFillColor(sf::Color::White);
         gatherTexts[i].setString("Gather");
-        gatherTexts[i].setPosition(300 + 25, 80 + i * 80 + 5);
+        gatherTexts[i].setPosition(350 + 25, 80 + i * 80 + 5);
 
         taxButtons[i].setSize(sf::Vector2f(110, 40));
         taxButtons[i].setFillColor(sf::Color(180, 250, 180));
-        taxButtons[i].setPosition(420, 80 + i * 80);
+        taxButtons[i].setPosition(470, 80 + i * 80);
 
         taxTexts[i].setFont(font);
         taxTexts[i].setCharacterSize(18);
         taxTexts[i].setFillColor(sf::Color::White);
         taxTexts[i].setString("Tax");
-        taxTexts[i].setPosition(420 + 35, 80 + i * 80 + 5);
+        taxTexts[i].setPosition(470 + 35, 80 + i * 80 + 5);
 
         bribeButtons[i].setSize(sf::Vector2f(110, 40));
         bribeButtons[i].setFillColor(sf::Color(250, 180, 180));
-        bribeButtons[i].setPosition(540, 80 + i * 80);
+        bribeButtons[i].setPosition(590, 80 + i * 80);
 
         bribeTexts[i].setFont(font);
         bribeTexts[i].setCharacterSize(18);
         bribeTexts[i].setFillColor(sf::Color::White);
         bribeTexts[i].setString("Bribe");
-        bribeTexts[i].setPosition(540 + 25, 80 + i * 80 + 5);
+        bribeTexts[i].setPosition(590 + 25, 80 + i * 80 + 5);
 
         arrestButtons[i].setSize(sf::Vector2f(110, 40));
         arrestButtons[i].setFillColor(sf::Color(200, 200, 200));
-        arrestButtons[i].setPosition(660, 80 + i * 80);
+        arrestButtons[i].setPosition(710, 80 + i * 80);
 
         arrestTexts[i].setFont(font);
         arrestTexts[i].setCharacterSize(18);
         arrestTexts[i].setFillColor(sf::Color::White);
         arrestTexts[i].setString("Arrest");
-        arrestTexts[i].setPosition(660 + 25, 80 + i * 80 + 5);
+        arrestTexts[i].setPosition(710 + 25, 80 + i * 80 + 5);
 
         sanctionButtons[i].setSize(sf::Vector2f(110, 40));
         sanctionButtons[i].setFillColor(sf::Color(200, 150, 250));
-        sanctionButtons[i].setPosition(780, 80 + i * 80);
+        sanctionButtons[i].setPosition(830, 80 + i * 80);
 
         sanctionTexts[i].setFont(font);
         sanctionTexts[i].setCharacterSize(18);
         sanctionTexts[i].setFillColor(sf::Color::White);
         sanctionTexts[i].setString("Sanction");
-        sanctionTexts[i].setPosition(780 + 10, 80 + i * 80 + 5);
+        sanctionTexts[i].setPosition(830 + 10, 80 + i * 80 + 5);
 
         coupButtons[i].setSize(sf::Vector2f(110, 40));
         coupButtons[i].setFillColor(sf::Color(250, 100, 100));
-        coupButtons[i].setPosition(900, 80 + i * 80);
+        coupButtons[i].setPosition(950, 80 + i * 80);
 
         coupTexts[i].setFont(font);
         coupTexts[i].setCharacterSize(18);
         coupTexts[i].setFillColor(sf::Color::White);
         coupTexts[i].setString("Coup");
-        coupTexts[i].setPosition(900 + 25, 80 + i * 80 + 5);
+        coupTexts[i].setPosition(950 + 25, 80 + i * 80 + 5);
+
+        skipButtons[i].setSize(sf::Vector2f(110, 40));
+        skipButtons[i].setFillColor(sf::Color(144, 238, 144));
+        skipButtons[i].setPosition(1070, 80 + i * 80);
+
+        skipTexts[i].setFont(font);
+        skipTexts[i].setCharacterSize(18);
+        skipTexts[i].setFillColor(sf::Color::White);
+        skipTexts[i].setString("Skip");
+        skipTexts[i].setPosition(1070 + 27, 80 + i * 80 + 5);
 
         if (players[i]->getRoll() == "Baron") {
             investButtons[i].setSize(sf::Vector2f(110, 40));
-            investButtons[i].setFillColor(sf::Color(100, 200, 250));
-            investButtons[i].setPosition(1020, 80 + i * 80);
+            investButtons[i].setFillColor(sf::Color(255, 200, 150));
+            investButtons[i].setPosition(1190, 80 + i * 80);
 
             investTexts[i].setFont(font);
             investTexts[i].setCharacterSize(18);
             investTexts[i].setFillColor(sf::Color::White);
             investTexts[i].setString("Invest");
-            investTexts[i].setPosition(1020 + 20, 80 + i * 80 + 5);
+            investTexts[i].setPosition(1190 + 25, 80 + i * 80 + 5);
         }
 
 
         if (players[i]->getRoll() == "Spy") {
             showCoinsButtons[i].setSize(sf::Vector2f(110, 40));
             showCoinsButtons[i].setFillColor(sf::Color(100, 200, 250));
-            showCoinsButtons[i].setPosition(1020, 80 + i * 80);
+            showCoinsButtons[i].setPosition(1190, 80 + i * 80);
 
             showCoinsTexts[i].setFont(font);
             showCoinsTexts[i].setCharacterSize(18);
             showCoinsTexts[i].setFillColor(sf::Color::White);
             showCoinsTexts[i].setString("Coins");
-            showCoinsTexts[i].setPosition(1020 + 20, 80 + i * 80 + 5);
+            showCoinsTexts[i].setPosition(1190 + 20, 80 + i * 80 + 5);
 
             prevArrestButtons[i].setSize(sf::Vector2f(110, 40));
             prevArrestButtons[i].setFillColor(sf::Color(200, 200, 250));
-            prevArrestButtons[i].setPosition(1140, 80 + i * 80);
+            prevArrestButtons[i].setPosition(1310, 80 + i * 80);
 
             prevArrestTexts[i].setFont(font);
             prevArrestTexts[i].setCharacterSize(18);
             prevArrestTexts[i].setFillColor(sf::Color::White);
             prevArrestTexts[i].setString("PrevArrest");
-            prevArrestTexts[i].setPosition(1140 + 10, 80 + i * 80 + 5);
+            prevArrestTexts[i].setPosition(1310 + 12, 80 + i * 80 + 5);
         }
 
-            if (players[i]->getRoll() == "Governor" || players[i]->getRoll() == "General" || players[i]->getRoll() == "Judge") {
+        if (players[i]->getRoll() == "Governor" || players[i]->getRoll() == "General" || players[i]->getRoll() == "Judge") {
             undoButtons[i].setSize(sf::Vector2f(110, 40));
-            undoButtons[i].setFillColor(sf::Color(100, 200, 250));
-            undoButtons[i].setPosition(1020, 80 + i * 80);
+            undoButtons[i].setFillColor(sf::Color(173, 216, 230));
+            undoButtons[i].setPosition(1190, 80 + i * 80);
 
             undoTexts[i].setFont(font);
             undoTexts[i].setCharacterSize(18);
             undoTexts[i].setFillColor(sf::Color::White);
             undoTexts[i].setString("Undo");
-            undoTexts[i].setPosition(1020 + 20, 80 + i * 80 + 5);
+            undoTexts[i].setPosition(1190 + 25, 80 + i * 80 + 5);
         }
     }
 
@@ -528,6 +593,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                 window.close();
 
             if (event.type == sf::Event::MouseButtonPressed) {
+                try{
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 for (size_t i = 0; i < players.size(); ++i) {
                     if (gatherButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -543,44 +609,110 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                         players[i]->bride();
                     }
                     if (arrestButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Arrest!\n";
-                        players[i]->arrest(*players[i]);
+                        //std::cout << players[i]->getName() << " performed Arrest!\n";
+                          if (players[i]->getName() != game.turn()) {
+                            throw std::runtime_error("This is not your turn");
+                          }
+                                Player* target = selectPlayerForAction(players, players[i]);
+                                if (target != nullptr) {
+                                    std::cout << players[i]->getName() << " performed Arrest on " << target->getName() << "!\n";
+                                    players[i]->arrest(*target);
+
+                                }
+                            
+                        //players[i]->arrest(*players[i]);
                     }
                     if (sanctionButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Sanction!\n";
-                        players[i]->sanction(*players[i]);
+                        //std::cout << players[i]->getName() << " performed Sanction!\n";
+                        if (players[i]->getName() != game.turn()) {
+                            throw std::runtime_error("This is not your turn");
+                          }
+                        Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Sanction on " << target->getName() << "!\n";
+                            players[i]->sanction(*target);
+
+                        }
+                        //players[i]->sanction(*players[i]);
                     }
                     if (coupButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Coup!\n";
-                        players[i]->coup(*players[i]);
+                        //std::cout << players[i]->getName() << " performed Coup!\n";
+                        if (players[i]->getName() != game.turn()) {
+                            throw std::runtime_error("This is not your turn");
+                          }
+                        Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Coup on " << target->getName() << "!\n";
+                            players[i]->coup(*target);
+                        }
+                        //players[i]->coup(*players[i]);
                     }
                     if (players[i]->getRoll() == "Baron" && investButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Invest!\n";
                         players[i]->invest();
                     }
+                    //cout<<players[i]->getRoll()<<endl;
                     if (players[i]->getRoll() == "Spy" && showCoinsButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Show Coins!\n";
-                        std::cout << "Number of coins: " << players[i]->coins() << std::endl;
+
+                        Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Show coinds on " << target->getName() << "!\n";
+                             displayCoins(target);
+                        }
                     }
                     if (players[i]->getRoll() == "Spy" && prevArrestButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed PrevArrest!\n";
-                        std::cout << "Prevent arrest activated.\n";
+                       
+                    
+                         Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed PrevArrest on " << target->getName() << "!\n";
+                            
+                            target->setPreventToArrest(true);
+                        }
                     }
                     if (players[i]->getRoll() == "Governor" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Undo!\n";
-                        //players[i]->undo();
+
+                         Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
+                            
+                            players[i]->undo(*target);
+                        }
                     }
                     if (players[i]->getRoll() == "General" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Undo!\n";
+                        //std::cout << players[i]->getName() << " performed Undo!\n";
                         //players[i]->undo();
+                        Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
+                            
+                            players[i]->undo(*target);
+                        }
                     }
                     if (players[i]->getRoll() == "Judge" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        std::cout << players[i]->getName() << " performed Undo!\n";
+                        //std::cout << players[i]->getName() << " performed Undo!\n";
                         //players[i]->undo();
+                        Player* target = selectPlayerForAction(players, players[i]);
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
+                            
+                            players[i]->undo(*target);
+                        }
+                    }
+                    if (skipButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        std::cout << players[i]->getName() << " performed Skip!\n";
+                        players[i]->skipTurn();
                     }
                     
                 }
                 updateCoinTexts(coinTexts, players);
+                updateAliveTexts(aliveTexts, players);
+                playerTurnText.setString("Player Turn: " + game.turn());
+               
+            }catch (const std::exception &e) {
+                displayError(e.what());
+            }
+
             }
         }
 
@@ -588,6 +720,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
         window.clear(sf::Color(240, 240, 240));
         window.draw(title);
         for (size_t i = 0; i < players.size(); ++i) {
+            window.draw(aliveTexts[i]);
             window.draw(playerTexts[i]);
             window.draw(gatherButtons[i]);
             window.draw(gatherTexts[i]);
@@ -602,6 +735,8 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             window.draw(coupButtons[i]);
             window.draw(coupTexts[i]);
             window.draw(coinTexts[i]);
+            window.draw(skipButtons[i]);
+            window.draw(skipTexts[i]);
             if (players[i]->getRoll() == "Baron") {
                 window.draw(investButtons[i]);
                 window.draw(investTexts[i]);
@@ -620,4 +755,99 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
          window.draw(playerTurnText);
         window.display();
     }
+}
+
+
+
+void displayError(const std::string& errorMessage) {
+    sf::RenderWindow errorWindow(sf::VideoMode(500, 200), "Error");
+
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+        std::cerr << "Failed to load font for error window\n";
+        return;
+    }
+
+    sf::Text errorText(errorMessage, font, 20);
+    errorText.setFillColor(sf::Color::Red);
+    errorText.setPosition(250 - errorText.getGlobalBounds().width / 2, 80);
+
+    sf::RectangleShape button(sf::Vector2f(100, 40));
+    button.setFillColor(sf::Color(180, 180, 250));
+    button.setPosition(150, 130);
+
+    sf::Text buttonText("OK", font, 18);
+    buttonText.setFillColor(sf::Color::White);
+    buttonText.setPosition(200 - buttonText.getGlobalBounds().width / 2, 140);
+
+    while (errorWindow.isOpen()) {
+        sf::Event event;
+        while (errorWindow.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                errorWindow.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(errorWindow);
+                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    errorWindow.close();
+                }
+            }
+        }
+
+        errorWindow.clear(sf::Color(240, 240, 240));
+        errorWindow.draw(errorText);
+        errorWindow.draw(button);
+        errorWindow.draw(buttonText);
+        errorWindow.display();
+    }
+}
+
+Player* selectPlayerForAction(const std::vector<Player*>& players, Player* currentPlayer) {
+    sf::RenderWindow selectionWindow(sf::VideoMode(600, 400), "Select a Player");
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+        std::cerr << "Failed to load font for selection window\n";
+        return nullptr;
+    }
+    std::vector<sf::RectangleShape> buttons;
+    std::vector<sf::Text> buttonTexts;
+    std::vector<Player*> selectablePlayers;
+    for (size_t i = 0; i < players.size(); ++i) {
+        if (players[i] == currentPlayer) {
+            continue; 
+        }
+        sf::RectangleShape button(sf::Vector2f(400, 50));
+        button.setFillColor(sf::Color(180, 180, 250));
+        button.setPosition(100, 50 + buttons.size() * 70);
+
+        sf::Text buttonText(players[i]->getName() + " - " + players[i]->getRoll(), font, 20);
+        buttonText.setFillColor(sf::Color::Black);
+        buttonText.setPosition(120, 60 + buttons.size() * 70);
+        buttons.push_back(button);
+        buttonTexts.push_back(buttonText);
+        selectablePlayers.push_back(players[i]);
+    }
+    while (selectionWindow.isOpen()) {
+        sf::Event event;
+        while (selectionWindow.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                selectionWindow.close();
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(selectionWindow);
+                for (size_t i = 0; i < buttons.size(); ++i) {
+                    if (buttons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        selectionWindow.close();
+                        return selectablePlayers[i];
+                    }
+                }
+            }
+        }
+        selectionWindow.clear(sf::Color(240, 240, 240));
+        for (size_t i = 0; i < buttons.size(); ++i) {
+            selectionWindow.draw(buttons[i]);
+            selectionWindow.draw(buttonTexts[i]);
+        }
+        selectionWindow.display();
+    }
+    return nullptr;
 }

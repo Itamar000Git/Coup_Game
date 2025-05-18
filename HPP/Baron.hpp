@@ -67,7 +67,8 @@ namespace coup{
                 
                 std::string getRoll();
                 void setLastCoinNum(int num){
-                    lastcoinsNum=num;
+                    //lastcoinsNum=num;
+                    coinsNum=num;
                 }
                 void setPreventToBride(bool block){
                     blockToBride = block;

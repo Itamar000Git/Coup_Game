@@ -45,8 +45,12 @@ namespace coup{
         }
 
     void General::undo( Player &player){
-        if(game.turn()!=name){
-            throw std::runtime_error("This is not your turn");
+        // if(game.turn()!=name){
+        //     throw std::runtime_error("This is not your turn");
+        //     return;
+        // }
+        if(player.getIsAlived()==false){
+            throw std::runtime_error("You cant coup a dead player");
             return;
         }
         if(player.getLastMove().empty()){
@@ -55,7 +59,7 @@ namespace coup{
         }
         std::string last = player.getLastMove().back();
         if(last!="coup"){
-            throw std::runtime_error("General can only undo tax");
+            throw std::runtime_error("Last move is not coup");
             return;
         }
         if(coinsNum<5){
@@ -65,10 +69,7 @@ namespace coup{
         // if(preventToArrest==true){
         //     setPreventToArrest(false);
         // }
-        if(player.getIsAlived()==false){
-            throw std::runtime_error("You cant coup a dead player");
-            return;
-        }
+ 
         if(blockToBride==true){
             setPreventToBride(false);
             game.nextTurn();
