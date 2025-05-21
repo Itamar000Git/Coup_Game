@@ -188,7 +188,7 @@ namespace coup
            
             std::cout<<"General get his coins back"<<std::endl;
         }
-        else if(player.getRoll()=="Merchent"){
+        else if(player.getRoll()=="Merchant"){
             if(num==1){
                 throw std::runtime_error("You dont have enough coins to arrest Merchent ");
             }
@@ -238,7 +238,7 @@ namespace coup
             lastMove.push_back("arrest");
             throw std::runtime_error("You are blocked by bribe");
         }
-        int num=player.getLastCoinNum();
+        int num=player.coins();
         int lim=3;
         if(player.getRoll()=="Judge"){
             lim=4;
@@ -247,9 +247,9 @@ namespace coup
             throw std::runtime_error("You dont have enough coins");
 
         }
-        if(player.getRoll()=="Baron"){ //Baron get his coins back
-            player.setLastCoinNum(player.getLastCoinNum()+1);
-        }
+        // if(player.getRoll()=="Baron"){ 
+        //     player.setLastCoinNum(player.coins()+1);
+        // }
         coinsNum=coinsNum-lim;
         player.setIsBlocked(true);
 

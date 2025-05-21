@@ -40,7 +40,7 @@ namespace coup{
             
                 //bool isAlive();
                 void undo( Player &player);
-                //void gather();
+                void gather();
                 void tax();
                 //void bride();
                 //void arrest( Player &player);

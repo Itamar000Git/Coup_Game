@@ -38,18 +38,14 @@ int main() {
         players[i]=drawCard(playerNames[i], game_2);
     }
 
-    //boardwin(players, numPlayers, game_2);
+
      displayCoupBoard(players,game_2);
-    // for (int i = 0; i < numPlayers; ++i) {
-    //     std::cout << players[i]->getName() << " is a " << players[i]->getRoll() << std::endl;
-    // }
+
 
    
     for (auto player : players) {
         delete player;
     }
-
-    
 
    return 0;
 }

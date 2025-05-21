@@ -46,45 +46,45 @@ namespace coup{
         std::cout <<"undo with:" << name<< " that is "<< role<<std::endl;
     }
 
-    /**
-    * if there is sanction the baron get only 1 coin
-    */
-    // void Baron::gather(){ 
-    //     if(game.turn()!=name){
-    //         throw std::runtime_error("This is not your turn");
-    //         return;
-    //     }
-    //     if(coinsNum>=10){
-    //         throw std::runtime_error("You have too many coins you need to coup");
-    //         return;
-    //     }
-    //     if(isBlocked==true){
-    //         throw std::runtime_error("You are blocked");
-    //         return;
-    //     }
-    //     if(preventToArrest==true){
-    //         setPreventToArrest(false);
-    //     }
-    //     if(blockToBride==true){
-    //         setPreventToBride(false);
-    //         freeMoves=0;
-    //         game.nextTurn();
-            
-    //         lastMove.push_back("gather");
-    //         throw std::runtime_error("You are blocked by bride");
-    //         return;
-    //     }
-    //     lastcoinsNum=coinsNum;
-    //     coinsNum++; //need to add check if there is a block
-    //     std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
-    //     std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
-    //     if(freeMoves>0){
-    //         freeMoves--;
-    //     }
-    //     else{
-    //         game.nextTurn();
-    //     }
+
+    void Baron::gather(){
     
+        if(game.turn()!=name){
+            throw std::runtime_error("This is not your turn");
+        }
+        if(coinsNum>=10){
+            throw std::runtime_error("You have too many coins you need to coup");
+        }
+        if(isBlocked==true){
+            
+            setIsBlocked(false);
+        }
+        if(preventToArrest==true){
+            setPreventToArrest(false);
+        }
+
+        
+        if(blockToBribe==true){
+            setPreventToBribe(false);
+            freeMoves=0;
+            game.nextTurn();            
+            lastMove.push_back("gather");
+            throw std::runtime_error("You are blocked by bribe");
+        }
+        starter();
+        //lastcoinsNum=coinsNum;
+        coinsNum++; //need to add check if there is a block
+        std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
+        std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
+        if(freeMoves>0){
+            freeMoves--;
+        }
+        else{
+            game.nextTurn();
+        }
+    
+        lastMove.push_back("gather");
+    }
     //     lastMove.push_back("gather");
     // }
     /**
@@ -102,6 +102,7 @@ namespace coup{
         }
         if(isBlocked==true){
             num=1;
+            setIsBlocked(false);
         }
         if(preventToArrest==true){
             setPreventToArrest(false);
