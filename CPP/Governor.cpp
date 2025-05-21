@@ -29,7 +29,7 @@ namespace coup{
        coinsNum = 0;   
        playerTurn = 0;
        isBlocked = false;
-       blockToBride = false;
+       blockToBribe = false;
        preventToArrest = false;
        freeMoves=0;
    }
@@ -56,7 +56,7 @@ namespace coup{
         }
         std::string last = player.getLastMove().back();
         if(last!="tax"){
-            throw std::runtime_error("Judge can only undo bride");
+            throw std::runtime_error("Judge can only undo bribe");
             return;
         }
         if(player.getRoll()=="Baron"){ // undo tax for baron is different
@@ -149,12 +149,12 @@ namespace coup{
             setPreventToArrest(false);
         }
 
-        if(blockToBride==true){
-            setPreventToBride(false);
+        if(blockToBribe==true){
+            setPreventToBribe(false);
             game.nextTurn();
             freeMoves=0;
             lastMove.push_back("tax");
-            throw std::runtime_error("You are blocked by bride");
+            throw std::runtime_error("You are blocked by bribe");
             return;
         }
         coinsNum+=3; 

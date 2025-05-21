@@ -8,6 +8,7 @@
 #include "Player.hpp"
 #include "Game.hpp"
 
+
 namespace coup{  
     class General:public Player{
         private:
@@ -60,15 +61,24 @@ namespace coup{
                         game.setLastArrest("");
                     }
                 }
-                void setPreventToBride(bool block){
-                    blockToBride = block;
+                void setPreventToBribe(bool block){
+                    blockToBribe = block;
                 }
-
+                // void setIsAlived(bool alive){
+                //     Alive = alive;
+                // }
+                
+                 //void setIsAlived(bool alive);
+                 void setIsAlivedGui(bool alive);
+                 bool askToStayAlive();
                 void setIsAlived(bool alive){
                     if(alive==false && coinsNum>=5){
                         std::cout<<"General Do you want to pay 5 coins to stay alive? y-Yes n-No"<<std::endl;
+                        
                         std::string answer;
                         std::cin>>answer;
+                        //bool check =  checkSavingGeneral();
+
                         if(answer=="n"){
                             Alive = alive;
                             return;
@@ -86,7 +96,9 @@ namespace coup{
                  bool getIsAlived(){
                     return Alive;
                 }
-                
+                bool getIsBlocked()const{
+                    return isBlocked;
+                }
 
                  ~General(){}
         

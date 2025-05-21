@@ -19,11 +19,17 @@ void displayCoupBoard(const vector<Player*>& players, Game &game);
 void displayError(const std::string& errorMessage);
 Player* selectPlayerForAction(const std::vector<Player*>& players, Player* currentPlayer);
 void updateAliveTexts(const std::vector<Player*>& aliveTexts,const vector<Player*>& players);
+void updateStatusCircles(std::vector<sf::CircleShape>& blockToBribeCircles,
+                         std::vector<sf::CircleShape>& preventArrestCircles,
+                         std::vector<sf::CircleShape>& sanctionedCircles,
+                         const std::vector<Player*>& players);
 void displayCoins(const Player* player);
+bool checkSavingGeneral();
 enum class GameRolls { 
     Baron, General, Governor, Judge, Merchant, Spy 
 };
 coup::Player* drawCard(std::string name, Game &game);
  void updateCoinTexts(std::vector<sf::Text>& coinTexts, const vector<Player*>& players);
+void endGame(std::string str);
 
-#endif
+#endif // MAIN_HPP

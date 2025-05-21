@@ -73,14 +73,17 @@ namespace coup{
                 void prventArrest(Player &player){
                     player.setPreventToArrest(true);
                }
-                void setPreventToBride(bool block){
-                    blockToBride = block;
+                void setPreventToBribe(bool block){
+                    blockToBribe = block;
                 }
                 void setIsAlived(bool alive){
                     Alive = alive;
                 }
                  bool getIsAlived(){
                     return Alive;
+                }
+                bool getIsBlocked()const{
+                    return isBlocked;
                 }
                  ~Spy(){}
         

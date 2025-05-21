@@ -28,7 +28,7 @@ namespace coup{
         playerTurn = 0;
         isBlocked = false;
         freeMoves=0;
-        blockToBride=false;
+        blockToBribe=false;
         preventToArrest=false;
     }
 
@@ -42,18 +42,19 @@ namespace coup{
             return role;
         }
 
-    void Judge::undo( Player &player){ //if the last move is bride we can undo it and set the block to bride
+    void Judge::undo( Player &player){ //if the last move is bribe we can undo it and set the block to bribe
 
         if(player.getLastMove().empty()){
             throw std::runtime_error("There is no last move to undo");
             return;
         }
         std::string last = player.getLastMove().back();
-        if(last!="bride"){
-            throw std::runtime_error("Judge can only undo bride");
+        std::cout<<"last move is: "<<last<<std::endl;
+        if(last!="bribe"){
+            throw std::runtime_error("Judge can only undo bribe");
             return;
         }
-        player.setPreventToBride(true);
+        player.setPreventToBribe(true);
         
 
         std::cout <<"undo with:" << name<< "that is"<< role<<std::endl;
@@ -317,8 +318,8 @@ namespace coup{
     //     lastMove.push_back("coup");
     // }
 
-    void Judge::judgPreventBride(Player &player){
-        player.setPreventToBride(true);
+    void Judge::judgPreventBribe(Player &player){
+        player.setPreventToBribe(true);
     }
 
 }

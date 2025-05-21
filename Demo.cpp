@@ -149,13 +149,13 @@ int main() {
     cout<<game_1<<endl;
 
 
-    cout<<"/////Show bride"<<endl; 
-    general.bride(); // General bride
+    cout<<"/////Show bribe"<<endl; 
+    general.bribe(); // General bribe
     cout<<endl;
 
-    cout<<"/////Trying to bride with less then 4 coins "<<endl;
+    cout<<"/////Trying to bribe with less then 4 coins "<<endl;
     try{
-        general.bride(); // General bride
+        general.bribe(); // General bribe
     } catch (const std::exception &e) {
         std::cerr << e.what() << '\n';
     }
@@ -171,15 +171,15 @@ int main() {
     cout<<game_1<<endl;
    // cout<<game_1.turn()<<endl; // Expected: Yossi (spy)
     //cout<<spy.coins()<<endl; // Expected: 4
-    spy.bride(); // Spy bride
+    spy.bribe(); // Spy bribe
     cout<<endl;
 
-    cout<<"/////After bride"<<endl;
+    cout<<"/////After bribe"<<endl;
     cout<<game_1<<endl;
     //cout<<spy.coins()<<endl; // Expected: 0
     //cout<<game_1.turn()<<endl; // Expected: Yossi (spy)
     cout<<"/////Trting to preform second move"<<endl;
-    judge.judgPreventBride(spy); // Judge prevent spy from briding
+    judge.judgPreventBribe(spy); // Judge prevent spy from briding
     try{
         spy.gather(); 
     } catch (const std::exception &e) {

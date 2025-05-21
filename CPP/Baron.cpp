@@ -21,7 +21,7 @@ namespace coup{
         playerTurn = 0;
         freeMoves=0;
         Alive = true;
-        blockToBride = false;
+        blockToBribe = false;
         preventToArrest = false;
         isBlocked = false;
 
@@ -106,13 +106,13 @@ namespace coup{
         if(preventToArrest==true){
             setPreventToArrest(false);
         }
-        if(blockToBride==true){
-            setPreventToBride(false);
+        if(blockToBribe==true){
+            setPreventToBribe(false);
             freeMoves=0;
             game.nextTurn();
             
             lastMove.push_back("tax");
-            throw std::runtime_error("You are blocked by bride");
+            throw std::runtime_error("You are blocked by bribe");
             return;
         }
         lastcoinsNum=coinsNum;
@@ -333,12 +333,12 @@ namespace coup{
         if(isBlocked==true){
             setIsBlocked(false);
         }
-        if(blockToBride==true){
-            setPreventToBride(false);
+        if(blockToBribe==true){
+            setPreventToBribe(false);
             game.nextTurn();
             freeMoves=0;
             lastMove.push_back("coup");
-            throw std::runtime_error("You are blocked by bride");
+            throw std::runtime_error("You are blocked by bribe");
             return;
         }
         coinsNum=coinsNum+3; // coinsNum-3+6

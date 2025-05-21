@@ -61,16 +61,19 @@ namespace coup{
                         game.setLastArrest("");
                     }
                 }
-                void setPreventToBride(bool block){
-                    blockToBride = block;
+                void setPreventToBribe(bool block){
+                    blockToBribe = block;
                 }
-                void judgPreventBride(Player &player);
+                void judgPreventBribe(Player &player);
 
                 void setIsAlived(bool alive){
                     Alive = alive;
                 }
                  bool getIsAlived(){
                     return Alive;
+                }
+                bool getIsBlocked()const{
+                    return isBlocked;
                 }
                  ~Judge(){}
         

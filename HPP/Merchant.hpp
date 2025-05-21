@@ -60,8 +60,8 @@ namespace coup{
                         game.setLastArrest("");
                     }
                 }
-                void setPreventToBride(bool block){
-                    blockToBride = block;
+                void setPreventToBribe(bool block){
+                    blockToBribe = block;
                 }
                 void setIsAlived(bool alive){
                     Alive = alive;
@@ -73,6 +73,9 @@ namespace coup{
                     if(coinsNum>=3){
                         coinsNum++;
                     }
+                }
+                bool getIsBlocked()const{
+                    return isBlocked;
                 }
                  ~Merchant(){}
         

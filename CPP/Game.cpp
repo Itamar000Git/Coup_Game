@@ -118,6 +118,7 @@ namespace coup
         if(coupedPlayers.size() > 0){
             coupedPlayers.back()->setIsAlived(true);
             coupedPlayers.pop_back();
+            numOfPlayers++;
         }
     }
 

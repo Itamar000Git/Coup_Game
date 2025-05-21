@@ -17,7 +17,7 @@ $(Target): $(OBJECT)
 	$(C) -Wall -o $(Target) $(OBJECT) $(SFML_LIBS)
 
 $(Target_demo): $(OBJECTD)
-	$(C) -Wall -o $(Target_demo) $(OBJECTD)
+	$(C) -Wall -o $(Target_demo) $(OBJECTD) $(SFML_LIBS)
 
 #$(TEST_TARGET): $(TEST_OBJ)
 #	$(C) -Wall -o $(TEST_TARGET) $(TEST_OBJ)

@@ -399,7 +399,7 @@ void get_members(int& num, std::vector<std::string>& players) {
     }
 
 void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
-    sf::RenderWindow window(sf::VideoMode(1450, 250 + players.size() * 80), "Coup Board");
+    sf::RenderWindow window(sf::VideoMode(1550, 250 + players.size() * 80), "Coup Board");
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
         std::cerr << "Failed to load font\n";
@@ -408,7 +408,11 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
 
     sf::Text playerTurnText("Player Turn: " + game.turn(), font, 24);
     playerTurnText.setFillColor(sf::Color::Black);
-    playerTurnText.setPosition(50, 250 + players.size() * 80 - 50);
+    playerTurnText.setPosition(50, 250 + players.size() * 80 - 80);
+
+    sf::Text playerLastArrested("Last Arrested: " + game.lastArrested(), font, 24);
+    playerLastArrested.setFillColor(sf::Color::Black);
+    playerLastArrested.setPosition(50, 250 + players.size() * 80 - 50);
 
     sf::Text title("Coup Board", font, 30);
     title.setFillColor(sf::Color::Black);
@@ -416,6 +420,13 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     std::vector<sf::Text> coinTexts(players.size());
     std::vector<sf::Text> playerTexts(players.size());
     std::vector<sf::Text> aliveTexts(players.size());
+ 
+    std::vector<sf::CircleShape> blockToBribeCircles(players.size());
+    std::vector<sf::CircleShape> preventArrestCircles(players.size());
+    std::vector<sf::CircleShape> sanctionedCircles(players.size());
+
+
+
 
     std::vector<sf::RectangleShape> gatherButtons(players.size());
     std::vector<sf::RectangleShape> taxButtons(players.size());
@@ -452,139 +463,241 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             aliveTexts[i].setString("Dead");
             aliveTexts[i].setFillColor(sf::Color::Red);
         }
+ 
+        
         aliveTexts[i].setFont(font);
         aliveTexts[i].setCharacterSize(20);
-        aliveTexts[i].setPosition(30, 80 + i * 80);
+        aliveTexts[i].setPosition(130, 80 + i * 80);
 
         playerTexts[i].setFont(font);
         playerTexts[i].setCharacterSize(20);
         playerTexts[i].setFillColor(sf::Color::Black);
         playerTexts[i].setString(playerInfo);
-        playerTexts[i].setPosition(100, 80 + i * 80);
+        playerTexts[i].setPosition(200, 80 + i * 80);
 
         coinTexts[i].setFont(font);
         coinTexts[i].setCharacterSize(18);
         coinTexts[i].setFillColor(sf::Color::Blue);
         coinTexts[i].setString("Coins: " + std::to_string(players[i]->coins()));
-        coinTexts[i].setPosition(250, 80 + i * 80);
+        coinTexts[i].setPosition(350, 80 + i * 80);
 
         gatherButtons[i].setSize(sf::Vector2f(110, 40));
-        gatherButtons[i].setFillColor(sf::Color(180, 180, 250));
-        gatherButtons[i].setPosition(350, 80 + i * 80);
+        gatherButtons[i].setFillColor(sf::Color (50, 50, 150));
+        gatherButtons[i].setPosition(450, 80 + i * 80);
 
         gatherTexts[i].setFont(font);
         gatherTexts[i].setCharacterSize(18);
         gatherTexts[i].setFillColor(sf::Color::White);
         gatherTexts[i].setString("Gather");
-        gatherTexts[i].setPosition(350 + 25, 80 + i * 80 + 5);
+        gatherTexts[i].setPosition(450 + 25, 80 + i * 80 + 5);
 
         taxButtons[i].setSize(sf::Vector2f(110, 40));
-        taxButtons[i].setFillColor(sf::Color(180, 250, 180));
-        taxButtons[i].setPosition(470, 80 + i * 80);
+        taxButtons[i].setFillColor(sf::Color (50, 150, 50));
+        taxButtons[i].setPosition(570, 80 + i * 80);
 
         taxTexts[i].setFont(font);
         taxTexts[i].setCharacterSize(18);
         taxTexts[i].setFillColor(sf::Color::White);
         taxTexts[i].setString("Tax");
-        taxTexts[i].setPosition(470 + 35, 80 + i * 80 + 5);
+        taxTexts[i].setPosition(570 + 35, 80 + i * 80 + 5);
 
         bribeButtons[i].setSize(sf::Vector2f(110, 40));
-        bribeButtons[i].setFillColor(sf::Color(250, 180, 180));
-        bribeButtons[i].setPosition(590, 80 + i * 80);
+        bribeButtons[i].setFillColor(sf::Color (150, 50, 50));
+        bribeButtons[i].setPosition(690, 80 + i * 80);
 
         bribeTexts[i].setFont(font);
         bribeTexts[i].setCharacterSize(18);
         bribeTexts[i].setFillColor(sf::Color::White);
         bribeTexts[i].setString("Bribe");
-        bribeTexts[i].setPosition(590 + 25, 80 + i * 80 + 5);
+        bribeTexts[i].setPosition(690 + 25, 80 + i * 80 + 5);
 
         arrestButtons[i].setSize(sf::Vector2f(110, 40));
-        arrestButtons[i].setFillColor(sf::Color(200, 200, 200));
-        arrestButtons[i].setPosition(710, 80 + i * 80);
+        arrestButtons[i].setFillColor(sf::Color (100, 100, 100));
+        arrestButtons[i].setPosition(810, 80 + i * 80);
 
         arrestTexts[i].setFont(font);
         arrestTexts[i].setCharacterSize(18);
         arrestTexts[i].setFillColor(sf::Color::White);
         arrestTexts[i].setString("Arrest");
-        arrestTexts[i].setPosition(710 + 25, 80 + i * 80 + 5);
+        arrestTexts[i].setPosition(810 + 25, 80 + i * 80 + 5);
 
         sanctionButtons[i].setSize(sf::Vector2f(110, 40));
-        sanctionButtons[i].setFillColor(sf::Color(200, 150, 250));
-        sanctionButtons[i].setPosition(830, 80 + i * 80);
+        sanctionButtons[i].setFillColor(sf::Color (100, 50, 150));
+        sanctionButtons[i].setPosition(930, 80 + i * 80);
 
         sanctionTexts[i].setFont(font);
         sanctionTexts[i].setCharacterSize(18);
         sanctionTexts[i].setFillColor(sf::Color::White);
         sanctionTexts[i].setString("Sanction");
-        sanctionTexts[i].setPosition(830 + 10, 80 + i * 80 + 5);
+        sanctionTexts[i].setPosition(930 + 10, 80 + i * 80 + 5);
 
         coupButtons[i].setSize(sf::Vector2f(110, 40));
-        coupButtons[i].setFillColor(sf::Color(250, 100, 100));
-        coupButtons[i].setPosition(950, 80 + i * 80);
+        coupButtons[i].setFillColor(sf::Color (150, 0, 0));
+        coupButtons[i].setPosition(1050, 80 + i * 80);
 
         coupTexts[i].setFont(font);
         coupTexts[i].setCharacterSize(18);
         coupTexts[i].setFillColor(sf::Color::White);
         coupTexts[i].setString("Coup");
-        coupTexts[i].setPosition(950 + 25, 80 + i * 80 + 5);
+        coupTexts[i].setPosition(1050 + 25, 80 + i * 80 + 5);
 
         skipButtons[i].setSize(sf::Vector2f(110, 40));
-        skipButtons[i].setFillColor(sf::Color(144, 238, 144));
-        skipButtons[i].setPosition(1070, 80 + i * 80);
+        skipButtons[i].setFillColor(sf::Color (30, 120, 30));
+        skipButtons[i].setPosition(1170, 80 + i * 80);
 
         skipTexts[i].setFont(font);
         skipTexts[i].setCharacterSize(18);
         skipTexts[i].setFillColor(sf::Color::White);
         skipTexts[i].setString("Skip");
-        skipTexts[i].setPosition(1070 + 27, 80 + i * 80 + 5);
+        skipTexts[i].setPosition(1170 + 27, 80 + i * 80 + 5);
 
         if (players[i]->getRoll() == "Baron") {
             investButtons[i].setSize(sf::Vector2f(110, 40));
-            investButtons[i].setFillColor(sf::Color(255, 200, 150));
-            investButtons[i].setPosition(1190, 80 + i * 80);
+            investButtons[i].setFillColor(sf::Color (200, 100, 0));
+            investButtons[i].setPosition(1290, 80 + i * 80);
 
             investTexts[i].setFont(font);
             investTexts[i].setCharacterSize(18);
             investTexts[i].setFillColor(sf::Color::White);
             investTexts[i].setString("Invest");
-            investTexts[i].setPosition(1190 + 25, 80 + i * 80 + 5);
+            investTexts[i].setPosition(1290 + 25, 80 + i * 80 + 5);
         }
 
 
         if (players[i]->getRoll() == "Spy") {
             showCoinsButtons[i].setSize(sf::Vector2f(110, 40));
-            showCoinsButtons[i].setFillColor(sf::Color(100, 200, 250));
-            showCoinsButtons[i].setPosition(1190, 80 + i * 80);
+            showCoinsButtons[i].setFillColor(sf::Color (0, 100, 150));
+            showCoinsButtons[i].setPosition(1290, 80 + i * 80);
 
             showCoinsTexts[i].setFont(font);
             showCoinsTexts[i].setCharacterSize(18);
             showCoinsTexts[i].setFillColor(sf::Color::White);
             showCoinsTexts[i].setString("Coins");
-            showCoinsTexts[i].setPosition(1190 + 20, 80 + i * 80 + 5);
+            showCoinsTexts[i].setPosition(1290 + 20, 80 + i * 80 + 5);
 
             prevArrestButtons[i].setSize(sf::Vector2f(110, 40));
-            prevArrestButtons[i].setFillColor(sf::Color(200, 200, 250));
-            prevArrestButtons[i].setPosition(1310, 80 + i * 80);
+            prevArrestButtons[i].setFillColor(sf::Color (100, 100, 150));
+            prevArrestButtons[i].setPosition(1410, 80 + i * 80);
 
             prevArrestTexts[i].setFont(font);
             prevArrestTexts[i].setCharacterSize(18);
             prevArrestTexts[i].setFillColor(sf::Color::White);
             prevArrestTexts[i].setString("PrevArrest");
-            prevArrestTexts[i].setPosition(1310 + 12, 80 + i * 80 + 5);
+            prevArrestTexts[i].setPosition(1410 + 10, 80 + i * 80 + 5);
         }
 
         if (players[i]->getRoll() == "Governor" || players[i]->getRoll() == "General" || players[i]->getRoll() == "Judge") {
             undoButtons[i].setSize(sf::Vector2f(110, 40));
-            undoButtons[i].setFillColor(sf::Color(173, 216, 230));
-            undoButtons[i].setPosition(1190, 80 + i * 80);
+            undoButtons[i].setFillColor(sf::Color (50, 100, 150));
+            undoButtons[i].setPosition(1290, 80 + i * 80);
 
             undoTexts[i].setFont(font);
             undoTexts[i].setCharacterSize(18);
             undoTexts[i].setFillColor(sf::Color::White);
             undoTexts[i].setString("Undo");
-            undoTexts[i].setPosition(1190 + 25, 80 + i * 80 + 5);
+            undoTexts[i].setPosition(1290 + 25, 80 + i * 80 + 5);
         }
+         sf::CircleShape blockToBribeCircle(10);
+        blockToBribeCircle.setPosition(20, 80 + i * 80 + 5);
+        if (players[i]->isBlockToBribe()) {
+            blockToBribeCircle.setFillColor(sf::Color(255, 165, 0)); // Orange
+        } else {
+            blockToBribeCircle.setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+        blockToBribeCircles[i] = blockToBribeCircle;
+
+        // Prevent Arrest Circle
+        sf::CircleShape preventArrestCircle(10);
+        preventArrestCircle.setPosition(50, 80 + i * 80 + 5);
+        if (players[i]->getPreventToArrest()) {
+            preventArrestCircle.setFillColor(sf::Color::Blue); // Blue
+        } else {
+            preventArrestCircle.setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+        preventArrestCircles[i] = preventArrestCircle;
+
+        // Sanctioned Circle
+        sf::CircleShape sanctionedCircle(10);
+        sanctionedCircle.setPosition(80, 80 + i * 80 + 5);
+        if (players[i]->getIsBlocked()) {
+            sanctionedCircle.setFillColor(sf::Color::Magenta); // Magenta
+        } else {
+            sanctionedCircle.setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+        sanctionedCircles[i] = sanctionedCircle;
+    
     }
+
+
+    //     // Legend
+    // sf::RectangleShape legendBox(sf::Vector2f(200, 120));
+    // legendBox.setFillColor(sf::Color(240, 240, 240));
+    // legendBox.setOutlineColor(sf::Color::Black);
+    // legendBox.setOutlineThickness(2);
+    // legendBox.setPosition(1350, 590);
+
+    // sf::Text legendTitle("Legend", font, 20);
+    // legendTitle.setFillColor(sf::Color::Black);
+    // legendTitle.setPosition(1360, 600);
+
+
+    // sf::CircleShape legendBlockToBribe(10);
+    // legendBlockToBribe.setFillColor(sf::Color(255, 165, 0)); // Orange
+    // legendBlockToBribe.setPosition(1360, 630);
+
+    // sf::Text legendBlockToBribeText("Block to Bribe", font, 16);
+    // legendBlockToBribeText.setFillColor(sf::Color::Black);
+    // legendBlockToBribeText.setPosition(1380, 630);
+
+    // sf::CircleShape legendPreventArrest(10);
+    // legendPreventArrest.setFillColor(sf::Color::Blue); // Blue
+    // legendPreventArrest.setPosition(1360, 655);
+
+    // sf::Text legendPreventArrestText("Prevent Arrest", font, 16);
+    // legendPreventArrestText.setFillColor(sf::Color::Black);
+    // legendPreventArrestText.setPosition(1380, 655);
+
+    // sf::CircleShape legendSanctioned(10);
+    // legendSanctioned.setFillColor(sf::Color::Magenta); // Magenta
+    // legendSanctioned.setPosition(1360, 680);
+
+    // sf::Text legendSanctionedText("Sanctioned", font, 16);
+    // legendSanctionedText.setFillColor(sf::Color::Black);
+    // legendSanctionedText.setPosition(1380, 680);
+
+    sf::RectangleShape legendBox(sf::Vector2f(200, 120));
+legendBox.setFillColor(sf::Color(240, 240, 240));
+legendBox.setOutlineColor(sf::Color::Black);
+legendBox.setOutlineThickness(2);
+legendBox.setPosition(1350, 250 + players.size() * 80 - 180);
+
+sf::Text legendTitle("Legend", font, 20);
+legendTitle.setFillColor(sf::Color::Black);
+legendTitle.setPosition(1360, 250 + players.size() * 80 - 170);
+
+sf::CircleShape legendBlockToBribe(10);
+legendBlockToBribe.setFillColor(sf::Color(255, 165, 0)); // Orange
+legendBlockToBribe.setPosition(1360, 250 + players.size() * 80 - 140);
+
+sf::Text legendBlockToBribeText("Block to Bribe", font, 16);
+legendBlockToBribeText.setFillColor(sf::Color::Black);
+legendBlockToBribeText.setPosition(1380, 250 + players.size() * 80 - 140);
+
+sf::CircleShape legendPreventArrest(10);
+legendPreventArrest.setFillColor(sf::Color::Blue); // Blue
+legendPreventArrest.setPosition(1360, 250 + players.size() * 80 - 115);
+
+sf::Text legendPreventArrestText("Prevent Arrest", font, 16);
+legendPreventArrestText.setFillColor(sf::Color::Black);
+legendPreventArrestText.setPosition(1380, 250 + players.size() * 80 - 115);
+
+sf::CircleShape legendSanctioned(10);
+legendSanctioned.setFillColor(sf::Color::Magenta); // Magenta
+legendSanctioned.setPosition(1360, 250 + players.size() * 80 - 90);
+
+sf::Text legendSanctionedText("Sanctioned", font, 16);
+legendSanctionedText.setFillColor(sf::Color::Black);
+legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -599,6 +712,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                     if (gatherButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Gather!\n";
                         players[i]->gather();
+                        
                     }
                     if (taxButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Tax!\n";
@@ -606,7 +720,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                     }
                     if (bribeButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Bribe!\n";
-                        players[i]->bride();
+                        players[i]->bribe();
                     }
                     if (arrestButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         //std::cout << players[i]->getName() << " performed Arrest!\n";
@@ -630,22 +744,55 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                         Player* target = selectPlayerForAction(players, players[i]);
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Sanction on " << target->getName() << "!\n";
-                            players[i]->sanction(*target);
+                            players[i]->sanction(*target);//////////////////
+                            updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
                         }
                         //players[i]->sanction(*players[i]);
                     }
                     if (coupButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        //std::cout << players[i]->getName() << " performed Coup!\n";
+                        
                         if (players[i]->getName() != game.turn()) {
                             throw std::runtime_error("This is not your turn");
-                          }
+                        }
                         Player* target = selectPlayerForAction(players, players[i]);
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Coup on " << target->getName() << "!\n";
-                            players[i]->coup(*target);
+    
+                                  players[i]->coup(*target,true); 
+                                    updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
+
+                                    int numAlive = 0;
+                                  for(int i=0;i<players.size();i++){
+                                    if(players[i]->getIsAlived()){
+                                       numAlive++;
+                                    }
+                                  }
+                                  if(numAlive==1){
+                                    cout<<"Game Over"<<endl;
+                                    string str= game.winner();
+                                    endGame(str);
+                                    window.close();
+                                  }
+                                //   try{
+                                //     updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
+
+                                //    string str= game.winner();
+
+                                //    endGame(str);
+                                //    window.close();
+
+                                //   }
+                                //   catch (const std::exception &e) {
+                                //      std::cout << e.what() << std::endl;
+                                //   }
+
+         
+
+                            updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
+
                         }
-                        //players[i]->coup(*players[i]);
+                        
                     }
                     if (players[i]->getRoll() == "Baron" && investButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Invest!\n";
@@ -668,6 +815,8 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                             std::cout << players[i]->getName() << " performed PrevArrest on " << target->getName() << "!\n";
                             
                             target->setPreventToArrest(true);
+                            updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
+
                         }
                     }
                     if (players[i]->getRoll() == "Governor" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -703,14 +852,19 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                         std::cout << players[i]->getName() << " performed Skip!\n";
                         players[i]->skipTurn();
                     }
+               
+
                     
                 }
                 updateCoinTexts(coinTexts, players);
                 updateAliveTexts(aliveTexts, players);
                 playerTurnText.setString("Player Turn: " + game.turn());
+                playerLastArrested.setString("Last Arrested: " + game.lastArrested());
+                updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
                
             }catch (const std::exception &e) {
                 displayError(e.what());
+                 playerTurnText.setString("Player Turn: " + game.turn());
             }
 
             }
@@ -737,6 +891,17 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             window.draw(coinTexts[i]);
             window.draw(skipButtons[i]);
             window.draw(skipTexts[i]);
+            window.draw(blockToBribeCircles[i]);
+            window.draw(preventArrestCircles[i]);
+            window.draw(sanctionedCircles[i]);
+            window.draw(legendBox);
+            window.draw(legendTitle);
+            window.draw(legendBlockToBribe);
+            window.draw(legendBlockToBribeText);
+            window.draw(legendPreventArrest);
+            window.draw(legendPreventArrestText);
+            window.draw(legendSanctioned);
+            window.draw(legendSanctionedText);
             if (players[i]->getRoll() == "Baron") {
                 window.draw(investButtons[i]);
                 window.draw(investTexts[i]);
@@ -753,6 +918,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             }
         }
          window.draw(playerTurnText);
+        window.draw(playerLastArrested);
         window.display();
     }
 }
@@ -792,6 +958,7 @@ void displayError(const std::string& errorMessage) {
                     errorWindow.close();
                 }
             }
+           
         }
 
         errorWindow.clear(sf::Color(240, 240, 240));
@@ -813,7 +980,7 @@ Player* selectPlayerForAction(const std::vector<Player*>& players, Player* curre
     std::vector<sf::Text> buttonTexts;
     std::vector<Player*> selectablePlayers;
     for (size_t i = 0; i < players.size(); ++i) {
-        if (players[i] == currentPlayer) {
+        if (players[i] == currentPlayer || !players[i]->getIsAlived()) {
             continue; 
         }
         sf::RectangleShape button(sf::Vector2f(400, 50));
@@ -851,3 +1018,132 @@ Player* selectPlayerForAction(const std::vector<Player*>& players, Player* curre
     }
     return nullptr;
 }
+
+void updateStatusCircles(std::vector<sf::CircleShape>& blockToBribeCircles,
+                         std::vector<sf::CircleShape>& preventArrestCircles,
+                         std::vector<sf::CircleShape>& sanctionedCircles,
+                         const std::vector<Player*>& players) {
+    for (size_t i = 0; i < players.size(); ++i) {
+        // Update Block to Bribe Circle
+        if (players[i]->isBlockToBribe()) {
+            blockToBribeCircles[i].setFillColor(sf::Color(255, 165, 0)); // Orange
+        } else {
+            blockToBribeCircles[i].setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+
+        // Update Prevent Arrest Circle
+        if (players[i]->getPreventToArrest()) {
+            preventArrestCircles[i].setFillColor(sf::Color::Blue); // Blue
+        } else {
+            preventArrestCircles[i].setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+
+        // Update Sanctioned Circle
+        if (players[i]->getIsBlocked()) {
+            sanctionedCircles[i].setFillColor(sf::Color::Magenta); // Magenta
+        } else {
+            sanctionedCircles[i].setFillColor(sf::Color(200, 200, 200)); // Gray
+        }
+    }
+}
+
+bool checkSavingGeneral(){
+    sf::RenderWindow window(sf::VideoMode(400, 200), "Saving General");
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+        std::cerr << "Failed to load font\n";
+        return false;
+    }
+
+    sf::Text text("Do you want to save the General?", font, 24);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(50, 50);
+
+    sf::RectangleShape yesButton(sf::Vector2f(100, 40));
+    yesButton.setFillColor(sf::Color(70, 130, 180));
+    yesButton.setPosition(50, 120);
+
+    sf::Text yesText("Yes", font, 22);
+    yesText.setFillColor(sf::Color::White);
+    yesText.setPosition(75, 127);
+
+    sf::RectangleShape noButton(sf::Vector2f(100, 40));
+    noButton.setFillColor(sf::Color(70, 130, 180));
+    noButton.setPosition(250, 120);
+
+    sf::Text noText("No", font, 22);
+    noText.setFillColor(sf::Color::White);
+    noText.setPosition(275, 127);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                if (yesButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close();
+                    return true;
+                }
+                if (noButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close();
+                    return false;
+                }
+            }
+        }
+
+        window.clear(sf::Color(250, 250, 250));
+        window.draw(text);
+        window.draw(yesButton);
+        window.draw(yesText);
+        window.draw(noButton);
+        window.draw(noText);
+        window.display();
+    }
+    return false; // Default return value if window is closed without selection
+}
+
+void endGame(std::string str){
+    sf::RenderWindow window(sf::VideoMode(400, 200), "Game Over");
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+        std::cerr << "Failed to load font\n";
+        return;
+    }
+
+    sf::Text text("The Winner is : " + str, font, 24);
+    text.setFillColor(sf::Color::Green);
+    text.setPosition(70, 50);
+
+    sf::RectangleShape okButton(sf::Vector2f(100, 40));
+    okButton.setFillColor(sf::Color(180, 180, 250));
+    okButton.setPosition(150, 120);
+
+    sf::Text okText("OK", font, 20);
+    okText.setFillColor(sf::Color::White);
+    okText.setPosition(175, 125);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                if (okButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close();
+                }
+            }
+        }
+
+        window.clear(sf::Color(250, 250, 250));
+        window.draw(text);
+        window.draw(okButton);
+        window.draw(okText);
+        window.display();
+    }
+}
+

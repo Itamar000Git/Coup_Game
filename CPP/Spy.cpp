@@ -28,7 +28,7 @@ namespace coup{
         
         isBlocked = false;
         freeMoves=0;
-        blockToBride=false;
+        blockToBribe=false;
         preventToArrest=false;
     }
 

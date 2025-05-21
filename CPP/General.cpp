@@ -1,5 +1,6 @@
 //itamarbabai98@gmail.com
-
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -27,7 +28,7 @@ namespace coup{
        playerTurn = 0;
        isBlocked = false;
        freeMoves=0;
-       blockToBride = false;
+       blockToBribe = false;
        preventToArrest = false;
 
    }
@@ -70,12 +71,12 @@ namespace coup{
         //     setPreventToArrest(false);
         // }
  
-        if(blockToBride==true){
-            setPreventToBride(false);
+        if(blockToBribe==true){
+            setPreventToBribe(false);
             game.nextTurn();
             freeMoves=0;
             lastMove.push_back("arrest");
-            throw std::runtime_error("You are blocked by bride");
+            throw std::runtime_error("You are blocked by bribe");
             return;
         }
         coinsNum=coinsNum-5;
@@ -341,4 +342,85 @@ namespace coup{
     //     }
     //     lastMove.push_back("coup");
     // }
+//void setIsAlivesGui(bool alive)
+
+void General::setIsAlivedGui(bool alive) {
+    if (alive == false && coinsNum >= 5) {
+        bool check = askToStayAlive();
+        if (check == false) {
+            Alive = alive;
+            return;
+        } else {
+            coinsNum -= 5;
+            std::cout << "General paid 5 coins to stay alive" << std::endl;
+            return;
+        }
+    }
+    Alive = alive;
+    
+}
+
+bool General::askToStayAlive() {
+    sf::RenderWindow window(sf::VideoMode(400, 200), "Stay Alive?");
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+        std::cerr << "Failed to load font\n";
+        return false;
+    }
+
+    sf::Text questionText("Do you want to pay 5 coins to stay alive?", font, 18);
+    questionText.setFillColor(sf::Color::Black);
+    questionText.setPosition(20, 50);
+
+    sf::RectangleShape yesButton(sf::Vector2f(100, 50));
+    yesButton.setFillColor(sf::Color(100, 200, 100));
+    yesButton.setPosition(50, 120);
+
+    sf::Text yesText("YES", font, 20);
+    yesText.setFillColor(sf::Color::White);
+    yesText.setPosition(75, 130);
+
+    sf::RectangleShape noButton(sf::Vector2f(100, 50));
+    noButton.setFillColor(sf::Color(200, 100, 100));
+    noButton.setPosition(250, 120);
+
+    sf::Text noText("NO", font, 20);
+    noText.setFillColor(sf::Color::White);
+    noText.setPosition(275, 130);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return false; 
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+                if (yesButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close();
+                    return true; 
+                }
+
+                if (noButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close();
+                    return false; 
+                }
+            }
+        }
+
+        window.clear(sf::Color(240, 240, 240));
+        window.draw(questionText);
+        window.draw(yesButton);
+        window.draw(yesText);
+        window.draw(noButton);
+        window.draw(noText);
+        window.display();
+    }
+
+    return false; 
+}
+
 }

@@ -70,8 +70,8 @@ namespace coup{
                     //lastcoinsNum=num;
                     coinsNum=num;
                 }
-                void setPreventToBride(bool block){
-                    blockToBride = block;
+                void setPreventToBribe(bool block){
+                    blockToBribe = block;
                 }
                 void setIsAlived(bool alive){
                     Alive = alive;
@@ -82,7 +82,9 @@ namespace coup{
                 void setIsBlocked(bool block){
                     isBlocked = block;
                 }
-                
+                bool getIsBlocked()const{
+                    return isBlocked;
+                }
    
                  ~Baron(){
 
