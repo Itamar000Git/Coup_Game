@@ -117,7 +117,9 @@ public:
             virtual void setIsAlivedGui(bool alive){
                 Alive = alive;
             }
-            virtual bool askToStayAlive(){}
+            virtual bool askToStayAlive(){
+                return false;
+            }
             virtual bool getIsAlived()=0;
             virtual void starter(){};
 

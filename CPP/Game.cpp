@@ -18,9 +18,13 @@ namespace coup
 
 
     void Game::addPlayer(Player* player){ // need to exception that init=0
+        if(numOfPlayers >= 6) {
+            throw std::runtime_error("Maximum number of players reached.");
+        }
         board.push_back(player);
         numOfPlayers++;
     }
+
     int& Game::getNumOfPlayers(){
         return numOfPlayers;  
     }
@@ -44,7 +48,7 @@ namespace coup
     }
 
 
-    void Game::removePlayer(Player* player){ //when player removed is stull on the voard just not alive
+    void Game::removePlayer(Player* player){ 
         for(size_t i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
                 setCoupedPlayers(player);

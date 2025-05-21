@@ -53,7 +53,18 @@
         "cstring": "cpp",
         "ctime": "cpp",
         "map": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "condition_variable": "cpp",
+        "csignal": "cpp",
+        "unordered_set": "cpp",
+        "ratio": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "mutex": "cpp",
+        "semaphore": "cpp",
+        "sstream": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     },
     "makefile.makefilePath": "/home/itamar/projects_CPP/Coup_game/makefile",
     "makefile.launchConfigurations": [

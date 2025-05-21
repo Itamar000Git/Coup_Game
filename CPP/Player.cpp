@@ -41,6 +41,9 @@ namespace coup
 
     //player& Player::operator=(const Player &player){
 
+/**
+ * 
+ */
     void Player::gather(){
     
         if(game.turn()!=name){
@@ -153,6 +156,10 @@ namespace coup
         if(game.turn()!=name){
             throw std::runtime_error("This is not your turn");
         }
+        if(coinsNum>=10){
+            throw std::runtime_error("You have too many coins you need to coup");
+            
+        }
         if(preventToArrest==true){
             throw std::runtime_error("You are blocked");
         }
@@ -210,6 +217,10 @@ namespace coup
         void Player::sanction( Player &player){
         if(game.turn()!=name){
             throw std::runtime_error("This is not your turn");
+        }
+        if(coinsNum>=10){
+            throw std::runtime_error("You have too many coins you need to coup");
+            
         }
         if(player.getIsAlived()==false){
             throw std::runtime_error("You cant sanction a dead player");
@@ -307,6 +318,10 @@ namespace coup
     void Player::skipTurn(){
         if(game.turn()!=name){
             throw std::runtime_error("This is not your turn");
+        }
+        if(coinsNum>=10){
+            throw std::runtime_error("You have too many coins you need to coup");
+            
         }
         if(preventToArrest==true){
             setPreventToArrest(false);

@@ -7,20 +7,20 @@ HEADERS =$(HPP_DIR)Game.hpp $(HPP_DIR)Governor.hpp $(HPP_DIR)Player.hpp $(HPP_DI
 SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 Target_demo =demo
 Target =main
-#TEST_TARGET = Test_prog
+TEST_TARGET = test
 FLAGS = -c -g -Wall -std=c++17 -I$(HPP_DIR)
 OBJECTD = $(OBJ_DIR)Demo.o $(OBJ_DIR)Game.o $(OBJ_DIR)Governor.o $(OBJ_DIR)Player.o $(OBJ_DIR)Spy.o $(OBJ_DIR)Baron.o $(OBJ_DIR)General.o $(OBJ_DIR)Judge.o $(OBJ_DIR)Merchant.o
 OBJECT = $(OBJ_DIR)Game.o $(OBJ_DIR)Governor.o $(OBJ_DIR)Player.o $(OBJ_DIR)Spy.o $(OBJ_DIR)main.o $(OBJ_DIR)Baron.o $(OBJ_DIR)General.o $(OBJ_DIR)Judge.o $(OBJ_DIR)Merchant.o
+TEST_OBJ = $(OBJ_DIR)test.o $(OBJ_DIR)Game.o $(OBJ_DIR)Governor.o $(OBJ_DIR)Player.o $(OBJ_DIR)Spy.o $(OBJ_DIR)Baron.o $(OBJ_DIR)General.o $(OBJ_DIR)Judge.o $(OBJ_DIR)Merchant.o
 
-#TEST_OBJ = squareMath.o test_prog.o
 $(Target): $(OBJECT)
 	$(C) -Wall -o $(Target) $(OBJECT) $(SFML_LIBS)
 
 $(Target_demo): $(OBJECTD)
 	$(C) -Wall -o $(Target_demo) $(OBJECTD) $(SFML_LIBS)
 
-#$(TEST_TARGET): $(TEST_OBJ)
-#	$(C) -Wall -o $(TEST_TARGET) $(TEST_OBJ)
+$(TEST_TARGET): $(TEST_OBJ)
+	$(C) -Wall -o $(TEST_TARGET) $(TEST_OBJ) $(SFML_LIBS)
 
 $(OBJ_DIR)Demo.o: Demo.cpp $(HEADERS)
 	$(C) $(FLAGS) Demo.cpp -o $(OBJ_DIR)Demo.o
@@ -52,11 +52,11 @@ $(OBJ_DIR)Judge.o: $(CPP_DIR)Judge.cpp $(HEADERS)
 $(OBJ_DIR)Merchant.o: $(CPP_DIR)Merchant.cpp $(HEADERS)
 	$(C) $(FLAGS) $(CPP_DIR)Merchant.cpp -o $(OBJ_DIR)Merchant.o
 
-#test_prog.o:test_prog.cpp $(HEADERS)
-#	$(C) $(FLAGS) test_prog.cpp -o test_prog.o
+$(OBJ_DIR)test.o:test.cpp $(HEADERS)
+	$(C) $(FLAGS) test.cpp -o $(OBJ_DIR)test.o
 
-#test: $(TEST_TARGET)
-#	./$(TEST_TARGET)
+Test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 
 Main: $(Target)
 	./$(Target)
@@ -64,18 +64,10 @@ Main: $(Target)
 Demo: $(Target_demo)
 	./$(Target_demo)
 
-valgrind: $(Target)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(Target)
-	
-
-valgrind_Demo: $(Target_demo)
+valgrind: $(Target_demo)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(Target_demo)
 
-#valgrind_tests: $(TEST_TARGET)
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(TEST_TARGET)
-
-.PHONY: $(Target) clean
+.PHONY: $(Target) clean $(Target_demo) $(TEST_TARGET) valgrind Test Main Demo
 
 clean:
-	rm -f $(OBJ_DIR)*.o $(Target) $(Target_demo) 
-#$(TEST_TARGET)
+	rm -f $(OBJ_DIR)*.o $(Target) $(Target_demo) $(TEST_TARGET)
