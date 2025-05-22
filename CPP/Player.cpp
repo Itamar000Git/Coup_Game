@@ -238,7 +238,8 @@ namespace coup
             lastMove.push_back("arrest");
             throw std::runtime_error("You are blocked by bribe");
         }
-        int num=player.coins();
+        //int num=player.coins();
+        int num=coins();
         int lim=3;
         if(player.getRoll()=="Judge"){
             lim=4;

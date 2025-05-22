@@ -14,22 +14,33 @@
 
 using namespace coup;
 TEST_CASE("Game Initialization") {
+
     Game game{};
+
     CHECK(game.players().size() == 0);
+    CHECK_THROWS_AS(game.turn(), std::runtime_error); // Game not started
+
     Governor gov(game, "gov_1");
+
+    CHECK_THROWS_AS(gov.gather(), std::runtime_error); // Game not started
+
     Spy spy(game, "spy_1");
     Baron baron(game, "baron_1");
     General gen(game, "general_1");
     Judge judge(game, "judge_1");
     Merchant merchant(game, "mer_1");
+
     CHECK(game.getNumOfPlayers() == 6);
     CHECK_THROWS_AS(game.winner(), std::runtime_error); // Game not over
     CHECK_THROWS_AS(General(game, "general_2"), std::runtime_error); // More than 6 players
 
     std::vector<std::string> players = game.players();
+
     CHECK(players.back() == "mer_1");
     CHECK(gov.getIsAlived() == true);
+
     game.removePlayer(&gov);
+
     CHECK(game.getNumOfPlayers() == 5);
     
     CHECK(game.turn()=="gov_1");
@@ -52,12 +63,20 @@ TEST_CASE("Game Initialization") {
 
 TEST_CASE("Player Actions") {
     Game game{};
+
+   
+
     Governor gov(game, "gov_1");
+
+  
+
     Spy spy(game, "spy_1");
     Baron baron(game, "baron_1");
     General gen(game, "general_1");
     Judge judge(game, "judge_1");
     Merchant merchant(game, "mer_1");
+
+
 
     SUBCASE("Unvalid Player Actions") {
         CHECK_THROWS_AS(spy.gather(), std::runtime_error); // Not gov's turn
@@ -278,7 +297,80 @@ TEST_CASE("Player Actions") {
     
         CHECK(spy.getIsAlived() == true);
         CHECK(game.getNumOfPlayers() == 6);
+    }
+}
+
+TEST_CASE("Egde Cases"){
+    Game game{};
+    
+    Governor gov(game, "gov_1");
+    Spy spy(game, "spy_1");
+    Baron baron(game, "baron_1");
+    General gen(game, "general_1");
+    Judge judge(game, "judge_1");
+    Merchant merchant(game, "mer_1");
+
+    SUBCASE("Test soft lock - Block , less then 3 coins and prevent to arrest") {
+        for(int i = 0; i <= 2; ++i) {
+            gov.gather();
+            spy.gather();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
         }
+        
+        CHECK(merchant.coins() == 3); 
+        gov.arrest(merchant);
+        CHECK(merchant.coins() == 1); //Merchant pay 2 coins after arrest
+
+        std::cout<<spy.coins()<<std::endl;
+
+        spy.sanction(merchant);
+        spy.prventArrest(merchant);
+
+        baron.gather();
+        gen.gather();
+        judge.gather();
+        CHECK_THROWS_AS(merchant.gather(), std::runtime_error); 
+        CHECK_THROWS_AS(merchant.tax(), std::runtime_error); 
+        CHECK_THROWS_AS(merchant.arrest(spy), std::runtime_error); 
+        CHECK_THROWS_AS(merchant.bribe(), std::runtime_error); 
+        CHECK_THROWS_AS(merchant.sanction(spy), std::runtime_error); 
+        CHECK_THROWS_AS(merchant.coup(spy), std::runtime_error); 
+
+        merchant.skipTurn(); //the only action that merchant can do is skip turn
+
+        CHECK(game.turn() == "gov_1"); 
+    }
+
+    SUBCASE("Test multipul Bribe") {
+        for(int i = 0; i <= 2; ++i) {
+            gov.tax();
+            spy.gather();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
+        }
+        gov.bribe();
+        CHECK(gov.coins() == 5); //Gov should have 5 coins after bribe 9-4
+        CHECK(game.turn() == "gov_1");
+        gov.tax();
+
+        gov.bribe();
+        gov.tax();
+        gov.bribe();
+        gov.tax();
+        gov.bribe();
+        gov.tax();
+        gov.bribe();
+        gov.tax();
+        gov.bribe();
+        gov.tax();
+
+        CHECK_THROWS_AS(gov.bribe(), std::runtime_error); //Gov can't bribe again
+    }
 }
 
 

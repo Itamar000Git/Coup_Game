@@ -77,6 +77,11 @@
             "cwd": "/home/itamar/projects_CPP/Coup_game",
             "binaryPath": "/home/itamar/projects_CPP/Coup_game/main",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/home/itamar/projects_CPP/Coup_game",
+            "binaryPath": "/home/itamar/projects_CPP/Coup_game/test",
+            "binaryArgs": []
         }
     ]
 }

@@ -19,6 +19,7 @@ namespace coup
             int playerTurn;
             int numOfPlayers;
             int gameInit;
+            
             std::string lastArrest;
             std::vector<Player*> coupedPlayers;
             //string currentTurn;

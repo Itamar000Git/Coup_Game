@@ -23,6 +23,7 @@ namespace coup
         }
         board.push_back(player);
         numOfPlayers++;
+        gameInit++;
     }
 
     int& Game::getNumOfPlayers(){
@@ -30,9 +31,10 @@ namespace coup
     }
 
     std::string Game::turn(){ //need to add exception 2-6 players
-        if(gameInit==0){
-            gameInit=1;
+        if(gameInit < 2 || gameInit > 6) {
+            throw std::runtime_error("Game must have between 2 and 6 players.");
         }
+       
         return board[playerTurn]->getName();
     }
     

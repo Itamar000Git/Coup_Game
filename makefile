@@ -14,13 +14,13 @@ OBJECT = $(OBJ_DIR)Game.o $(OBJ_DIR)Governor.o $(OBJ_DIR)Player.o $(OBJ_DIR)Spy.
 TEST_OBJ = $(OBJ_DIR)test.o $(OBJ_DIR)Game.o $(OBJ_DIR)Governor.o $(OBJ_DIR)Player.o $(OBJ_DIR)Spy.o $(OBJ_DIR)Baron.o $(OBJ_DIR)General.o $(OBJ_DIR)Judge.o $(OBJ_DIR)Merchant.o
 
 $(Target): $(OBJECT)
-	$(C) -Wall -o $(Target) $(OBJECT) $(SFML_LIBS)
+	$(C) -Wall -g -o $(Target) $(OBJECT) $(SFML_LIBS)
 
 $(Target_demo): $(OBJECTD)
 	$(C) -Wall -o $(Target_demo) $(OBJECTD) $(SFML_LIBS)
 
 $(TEST_TARGET): $(TEST_OBJ)
-	$(C) -Wall -o $(TEST_TARGET) $(TEST_OBJ) $(SFML_LIBS)
+	$(C) -Wall -g -o $(TEST_TARGET) $(TEST_OBJ) $(SFML_LIBS)
 
 $(OBJ_DIR)Demo.o: Demo.cpp $(HEADERS)
 	$(C) $(FLAGS) Demo.cpp -o $(OBJ_DIR)Demo.o
