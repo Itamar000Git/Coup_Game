@@ -12,14 +12,7 @@
 namespace coup{  
     class General:public Player{
         private:
-            // Game &game;
-            // std::string name;
-            // int coinsNum;
-            // std::string role;
-            // bool Alive;
-            // int playerIndex;
-            // int playerTurn;
-            // std::vector<std::string> lastMove;
+            
 
         public:
                 General(Game &game, const std::string &name1);
@@ -34,12 +27,7 @@ namespace coup{
                 int coins() const;
                 std::string getName();
                 void undo( Player &player);
-                //void gather();
-                //void tax();
-                //void bride();
-               // void arrest( Player &player);
-               //void sanction(Player &player);
-               // void coup( Player &player);
+                
                 void deleteLastMove();
                 std::string getRoll();
                 void setIsBlocked(bool block){
@@ -64,11 +52,7 @@ namespace coup{
                 void setPreventToBribe(bool block){
                     blockToBribe = block;
                 }
-                // void setIsAlived(bool alive){
-                //     Alive = alive;
-                // }
                 
-                 //void setIsAlived(bool alive);
                  void setIsAlivedGui(bool alive);
                  bool askToStayAlive();
                 void setIsAlived(bool alive){
@@ -77,7 +61,7 @@ namespace coup{
                         
                         std::string answer;
                         std::cin>>answer;
-                        //bool check =  checkSavingGeneral();
+                        
 
                         if(answer=="n"){
                             Alive = alive;

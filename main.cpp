@@ -19,7 +19,6 @@
 #include <stdexcept>
 #include <vector>
 #include "HPP/main.hpp"
-//using namespace std;
 using namespace coup;
 
 
@@ -66,7 +65,6 @@ Player* drawCard(std::string name, Game &game) {
         case 5: return new Spy(game, name);
     }
    
-    //return Player; // Default case, should not happen
 }
 
 
@@ -625,41 +623,6 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     }
 
 
-    //     // Legend
-    // sf::RectangleShape legendBox(sf::Vector2f(200, 120));
-    // legendBox.setFillColor(sf::Color(240, 240, 240));
-    // legendBox.setOutlineColor(sf::Color::Black);
-    // legendBox.setOutlineThickness(2);
-    // legendBox.setPosition(1350, 590);
-
-    // sf::Text legendTitle("Legend", font, 20);
-    // legendTitle.setFillColor(sf::Color::Black);
-    // legendTitle.setPosition(1360, 600);
-
-
-    // sf::CircleShape legendBlockToBribe(10);
-    // legendBlockToBribe.setFillColor(sf::Color(255, 165, 0)); // Orange
-    // legendBlockToBribe.setPosition(1360, 630);
-
-    // sf::Text legendBlockToBribeText("Block to Bribe", font, 16);
-    // legendBlockToBribeText.setFillColor(sf::Color::Black);
-    // legendBlockToBribeText.setPosition(1380, 630);
-
-    // sf::CircleShape legendPreventArrest(10);
-    // legendPreventArrest.setFillColor(sf::Color::Blue); // Blue
-    // legendPreventArrest.setPosition(1360, 655);
-
-    // sf::Text legendPreventArrestText("Prevent Arrest", font, 16);
-    // legendPreventArrestText.setFillColor(sf::Color::Black);
-    // legendPreventArrestText.setPosition(1380, 655);
-
-    // sf::CircleShape legendSanctioned(10);
-    // legendSanctioned.setFillColor(sf::Color::Magenta); // Magenta
-    // legendSanctioned.setPosition(1360, 680);
-
-    // sf::Text legendSanctionedText("Sanctioned", font, 16);
-    // legendSanctionedText.setFillColor(sf::Color::Black);
-    // legendSanctionedText.setPosition(1380, 680);
 
     sf::RectangleShape legendBox(sf::Vector2f(200, 120));
 legendBox.setFillColor(sf::Color(240, 240, 240));
@@ -730,21 +693,21 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
 
                                 }
                             
-                        //players[i]->arrest(*players[i]);
+                        
                     }
                     if (sanctionButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        //std::cout << players[i]->getName() << " performed Sanction!\n";
+                       
                         if (players[i]->getName() != game.turn()) {
                             throw std::runtime_error("This is not your turn");
                           }
                         Player* target = selectPlayerForAction(players, players[i]);
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Sanction on " << target->getName() << "!\n";
-                            players[i]->sanction(*target);//////////////////
+                            players[i]->sanction(*target);
                             updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
                         }
-                        //players[i]->sanction(*players[i]);
+                     
                     }
                     if (coupButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         
@@ -770,19 +733,7 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
                                     endGame(str);
                                     window.close();
                                   }
-                                //   try{
-                                //     updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
-
-                                //    string str= game.winner();
-
-                                //    endGame(str);
-                                //    window.close();
-
-                                //   }
-                                //   catch (const std::exception &e) {
-                                //      std::cout << e.what() << std::endl;
-                                //   }
-
+                                
          
 
                             updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
@@ -794,7 +745,7 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
                         std::cout << players[i]->getName() << " performed Invest!\n";
                         players[i]->invest();
                     }
-                    //cout<<players[i]->getRoll()<<endl;
+                    
                     if (players[i]->getRoll() == "Spy" && showCoinsButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
                         Player* target = selectPlayerForAction(players, players[i]);
@@ -825,8 +776,7 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
                         }
                     }
                     if (players[i]->getRoll() == "General" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        //std::cout << players[i]->getName() << " performed Undo!\n";
-                        //players[i]->undo();
+                       
                         Player* target = selectPlayerForAction(players, players[i]);
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
@@ -835,8 +785,7 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
                         }
                     }
                     if (players[i]->getRoll() == "Judge" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        //std::cout << players[i]->getName() << " performed Undo!\n";
-                        //players[i]->undo();
+                        
                         Player* target = selectPlayerForAction(players, players[i]);
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";

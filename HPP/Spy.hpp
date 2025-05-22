@@ -12,14 +12,7 @@
 namespace coup{  
     class Spy:public Player{
         private:
-            // Game &game;
-            // std::string name;
-            // int coinsNum;
-            // std::string role;
-            // bool Alive;
-            // int playerIndex;
-            // int playerTurn;
-            // std::vector<std::string> lastMove;
+            
 
         public:
                 Spy(Game &game, const std::string &name1);
@@ -41,18 +34,17 @@ namespace coup{
                     }
                     return player.coins();
                 }
-                //void gather();
-               // void tax();
-                //void bride();
-               // void arrest( Player &player);
-                //void sanction(Player &player);
-                //void coup( Player &player);
+                
                 void deleteLastMove();
                 std::string getRoll();
                 void setIsBlocked(bool block){
                     isBlocked = block;
                 }
                 int watchNumOfCoins(Player &player) const{
+                    if(player.getIsAlived() == false){
+                        throw std::runtime_error("You cant see a dead player coins");
+                    }
+                    
                    return player.coins();
                 }
                 void setLastCoinNum(int num){
@@ -71,6 +63,9 @@ namespace coup{
                     }
                 }
                 void prventArrest(Player &player){
+                    if(player.getIsAlived() == false){
+                        throw std::runtime_error("You cant see a dead player coins");
+                    }
                     player.setPreventToArrest(true);
                }
                 void setPreventToBribe(bool block){

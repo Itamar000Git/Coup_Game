@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-//#include "Player.hpp"
 namespace coup
 {  
     class Player;//Early declaration for using the players vector
@@ -22,7 +21,6 @@ namespace coup
             
             std::string lastArrest;
             std::vector<Player*> coupedPlayers;
-            //string currentTurn;
     
         public:
             Game();
@@ -30,7 +28,6 @@ namespace coup
             int& getNumOfPlayers();
             std::string turn();
             std::vector<std::string> players();
-            //std::vector<Player*>& getCoupedPlayers();
             void setCoupedPlayers(Player* player){
                 coupedPlayers.push_back(player);
             }

@@ -54,7 +54,6 @@ namespace coup
         for(size_t i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
                 setCoupedPlayers(player);
-                //board.erase(board.begin()+i);
                 numOfPlayers--;
                 if(numOfPlayers==1){
                     winner();
@@ -74,7 +73,6 @@ namespace coup
         do {
             playerTurn = (playerTurn + 1) % board.size();
         } while (!board[playerTurn]->getIsAlived());
-      // playerTurn= (playerTurn+1)%numOfPlayers;
     }
     std::string Game::lastArrested(){
         return lastArrest;
@@ -117,9 +115,7 @@ namespace coup
         }
 
     }
-    // std::vector<Player*>& Game::getCoupedPlayers(){
-    //     return coupedPlayers;
-    // }
+
     void Game::uncoupLastCoupedPlayer(){
         if(coupedPlayers.size() > 0){
             coupedPlayers.back()->setIsAlived(true);

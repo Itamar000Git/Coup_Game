@@ -10,40 +10,6 @@
 namespace coup
 {  
 
-    // void Player::deleteLastMove(){
-    //     if (lastMove.empty()) {
-    //         throw std::runtime_error("No moves to delete.");
-    //     }
-    //     std::string last= lastMove.back();
-    //     lastMove.pop_back();
-    //     if(last=="gather"){
-    //         coinsNum--;
-    //     }
-  
-    // }
-    //  Player::Player() {
-
-    //  }
-
-
-    // std::string Player::getName(){
-    //     //return name;
-    // }
-    // bool Player::isAlive(){
-     
-    // }
-
-    // int Player::coins() const{//returns the number of coins the player has
-      
-    // }
-
-    // void Player::undo(const Player &player){}//need to implement in the inharitance
-
-    //player& Player::operator=(const Player &player){
-
-/**
- * 
- */
     void Player::gather(){
     
         if(game.turn()!=name){
@@ -68,7 +34,6 @@ namespace coup
             throw std::runtime_error("You are blocked by bribe");
         }
         starter();
-        //lastcoinsNum=coinsNum;
         coinsNum++; //need to add check if there is a block
         std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
@@ -163,6 +128,9 @@ namespace coup
         if(preventToArrest==true){
             throw std::runtime_error("You are blocked");
         }
+        if(this==&player){
+            throw std::runtime_error("You cant arrest yourself");
+        }
         if(player.getName()==game.lastArrested()){
             throw std::runtime_error("You cant arrest the same player twice");
         }
@@ -224,6 +192,9 @@ namespace coup
         }
         if(player.getIsAlived()==false){
             throw std::runtime_error("You cant sanction a dead player");
+        }
+        if(this==&player){
+            throw std::runtime_error("You cant sanction yourself");
         }        
         if(preventToArrest==true){
             setPreventToArrest(false);
@@ -248,9 +219,7 @@ namespace coup
             throw std::runtime_error("You dont have enough coins");
 
         }
-        // if(player.getRoll()=="Baron"){ 
-        //     player.setLastCoinNum(player.coins()+1);
-        // }
+       
         coinsNum=coinsNum-lim;
         player.setIsBlocked(true);
 
@@ -277,6 +246,9 @@ namespace coup
         if(player.getIsAlived()==false){
             throw std::runtime_error("You cant coup a dead player");
             return;
+        }
+        if(this==&player){
+            throw std::runtime_error("You cant coup yourself");
         }
         if(preventToArrest==true){
             setPreventToArrest(false);

@@ -14,14 +14,7 @@ namespace coup{
         private:
     
             int lastcoinsNum;
-            // Game &game;
-            // std::string name;
-            // int coinsNum;
-            // std::string role;
-            // bool Alive;
-            // int playerIndex;
-            // int playerTurn;
-            // std::vector<std::string> lastMove;
+
 
         public:
             Baron(Game &game, const std::string &name1);
@@ -38,19 +31,14 @@ namespace coup{
                 int coins() const;
                 std::string getName();
             
-                //bool isAlive();
-                void undo( Player &player);
+                
+                void undo( Player &player){}
                 void gather();
                 void tax();
-                //void bride();
-                //void arrest( Player &player);
-                //void sanction( Player &player);
-                //void coup( Player &player);
+                
                 void invest();
                 void deleteLastMove();
-                // int getTaxNum()const{
-                //     return 2;
-                // }
+                
                 int getLastCoinNum()const{
                     return lastcoinsNum;
                 }
@@ -67,7 +55,7 @@ namespace coup{
                 
                 std::string getRoll();
                 void setLastCoinNum(int num){
-                    //lastcoinsNum=num;
+                    
                     coinsNum=num;
                 }
                 void setPreventToBribe(bool block){

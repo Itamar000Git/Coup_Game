@@ -12,14 +12,7 @@
 namespace coup{  
     class Merchant:public Player{
         private:
-            // Game &game;
-            // std::string name;
-            // int coinsNum;
-            // std::string role;
-            // bool Alive;
-            // int playerIndex;
-            // int playerTurn;
-            // std::vector<std::string> lastMove;
+            
 
         public:
                 Merchant(Game &game, const std::string &name1);
@@ -34,12 +27,7 @@ namespace coup{
                 int coins() const;
                 std::string getName();
                 void undo( Player &player);
-                //void gather();
-                //void tax();
-                //void bride();
-                //void arrest( Player &player);
-                //void sanction(Player &player);
-                //void coup( Player &player);
+                
                 void deleteLastMove();
                 std::string getRoll();
                 void setIsBlocked(bool block){

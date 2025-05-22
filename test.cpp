@@ -10,7 +10,6 @@
 #include "HPP/General.hpp"
 #include "HPP/Judge.hpp"
 #include "HPP/Merchant.hpp"
-//#include "HPP/main.hpp"
 
 using namespace coup;
 TEST_CASE("Game Initialization") {
@@ -26,6 +25,7 @@ TEST_CASE("Game Initialization") {
 
     Spy spy(game, "spy_1");
     Baron baron(game, "baron_1");
+    CHECK_THROWS_AS(Baron(game, "baron_1"), std::runtime_error); 
     General gen(game, "general_1");
     Judge judge(game, "judge_1");
     Merchant merchant(game, "mer_1");
@@ -371,6 +371,172 @@ TEST_CASE("Egde Cases"){
 
         CHECK_THROWS_AS(gov.bribe(), std::runtime_error); //Gov can't bribe again
     }
+
+     SUBCASE("Test game next turn over dead player") {
+        for(int i = 0; i <= 3; ++i) {
+            gov.tax();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
+        }
+        
+        CHECK(gov.coins() == 12);
+        gov.coup(judge);
+        spy.tax();
+        baron.gather();
+        gen.gather();
+       
+        merchant.gather();
+
+        gov.gather();
+        spy.coup(merchant);
+        baron.gather();
+        gen.gather();
+        CHECK_THROWS_AS(judge.gather(), std::runtime_error); //Baron is dead
+        CHECK_THROWS_AS(merchant.gather(), std::runtime_error); //Merchant is dead
+        CHECK(game.turn() == "gov_1");
+        gov.gather();
+
+        CHECK(game.getNumOfPlayers() == 4); //Num of players should be 4
+    
+     }
+
+    SUBCASE("Test Actions over deaf player"){
+        for(int i = 0; i <= 3; ++i) {
+            gov.tax();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
+        }
+
+        gov.coup(merchant);
+        CHECK_THROWS_AS(gov.undo(merchant), std::runtime_error); //Spy can't gather over dead player
+        CHECK_THROWS_AS(spy.prventArrest(merchant), std::runtime_error); //Spy can't gather over dead player
+        CHECK_THROWS_AS(spy.watchNumOfCoins(merchant), std::runtime_error); //Spy can't watch coins over dead player
+        CHECK_THROWS_AS(spy.arrest(merchant), std::runtime_error); //Spy can't arrest over dead player
+        CHECK_THROWS_AS(spy.sanction(merchant), std::runtime_error); //Spy can't sanction over dead player
+        CHECK_THROWS_AS(judge.undo(merchant), std::runtime_error); 
+
+        spy.tax();
+        baron.gather();
+        gen.gather();
+        judge.gather();
+        gov.gather();
+        CHECK_THROWS_AS(spy.coup(merchant), std::runtime_error); //Merchant is dead
+        
+     }
+
+    SUBCASE("Test Actions not in turn") {
+        for(int i = 0; i <= 3; ++i) {
+            gov.tax();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
+        }
+        gov.coup(judge);
+        spy.tax();
+        CHECK(game.turn() == "baron_1");
+        CHECK_THROWS_AS(spy.coup(merchant), std::runtime_error); //Spy can't coup over dead player
+        CHECK_THROWS_AS(spy.bribe(), std::runtime_error); //Spy can't bribe over dead player
+        CHECK_THROWS_AS(spy.sanction(merchant), std::runtime_error); //Spy can't sanction over dead player
+        CHECK_THROWS_AS(spy.arrest(merchant), std::runtime_error); //Spy can't arrest over dead player
+        CHECK_THROWS_AS(spy.tax(), std::runtime_error); //Spy can't tax over dead player
+        CHECK_THROWS_AS(spy.gather(), std::runtime_error); //Spy can't gather over dead player
+
+     }
+     SUBCASE("Test Undo on wrong actions"){
+        for(int i = 0; i <= 3; ++i) {
+            gov.gather();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.gather();
+            merchant.gather();
+        }
+
+        CHECK_THROWS_AS(gov.undo(baron), std::runtime_error);
+        CHECK_THROWS_AS(judge.undo(baron), std::runtime_error);
+        CHECK_THROWS_AS(gen.undo(baron), std::runtime_error);
+
+
+     }
+
+     SUBCASE("Test self save with genral"){ //maybe leave it for the end
+        for(int i = 0; i <= 4; ++i) {
+            gov.gather();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.tax();
+            merchant.gather();
+        }
+        gov.gather();
+
+        CHECK(gen.coins() == 5); //Gen should have 5 coins
+        std::cout<<"###################please press yes in the gui##################"<<std::endl;
+        spy.coup(gen,true); //need to press yes in the gui
+
+        
+        CHECK(gen.getIsAlived() == true); 
+
+        baron.gather();
+        gen.gather();
+
+        CHECK(gen.coins() == 1); //Gen should have 0 coins
+        judge.coup(gen,true); //not ask anything in the gui because gen dont have enough coins
+        CHECK(gen.getIsAlived() == false); //Gen should be dead
+        
+     }
+     SUBCASE("Test self actions"){
+        for(int i = 0; i <= 4; ++i) {
+            gov.gather();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.tax();
+            merchant.gather();
+        }
+        gov.gather();
+        CHECK_THROWS_AS(spy.coup(spy), std::runtime_error); 
+        spy.coup(gov);
+
+        CHECK_THROWS_AS( baron.sanction(baron), std::runtime_error); 
+        CHECK_THROWS_AS( baron.arrest(baron), std::runtime_error); 
+       
+     }
+
+      SUBCASE("Test action with no coins"){
+        CHECK_THROWS_AS(gov.sanction(spy), std::runtime_error); 
+        CHECK_THROWS_AS(gov.arrest(spy), std::runtime_error); 
+        CHECK_THROWS_AS(gov.coup(spy), std::runtime_error); 
+        
+      }
+
+    
+    SUBCASE("Test undo to dead player action"){
+        for(int i = 0; i <= 4; ++i) {
+            gov.gather();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.tax();
+            merchant.gather();
+        }
+        gov.gather();
+        spy.coup(judge);
+        CHECK_THROWS_AS(spy.prventArrest(judge), std::runtime_error); //Spy can't gather over dead player
+        CHECK_THROWS_AS(spy.watchNumOfCoins(judge), std::runtime_error); //Spy can't watch coins over dead player
+        CHECK_THROWS_AS(gov.undo(judge), std::runtime_error);
+        
+    
+    }
+        
 }
 
 
