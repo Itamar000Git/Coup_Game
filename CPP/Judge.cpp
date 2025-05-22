@@ -51,7 +51,7 @@ namespace coup{
         }
         player.setPreventToBribe(true);
         
-
+        player.setLastMove("undo bribe");
         std::cout <<"undo with:" << name<< "that is"<< role<<std::endl;
     }
     

@@ -7,6 +7,11 @@
 #include <vector>
 #include "Game.hpp"
 namespace coup{  
+
+    /**
+     * @brief The Player class represents a player in the Coup game.
+     * It contains information about the player's name, coins, role, and actions.
+     */
     class Player {
         protected:
     Game &game;
@@ -24,6 +29,11 @@ namespace coup{
     bool preventToArrest;
 
 public:
+    /**
+     * @brief Constructor for the Player class.
+     * @param game The game instance.
+     * @param name The name of the player.
+     */
     Player(Game &game, const std::string &name)
         : game(game), name(name), coinsNum(0), freeMoves(0), lastcoinsNum(0), 
           role(""), Alive(true), playerIndex(0), playerTurn(0), 
@@ -34,7 +44,11 @@ public:
                 }
             }
           }
-
+    
+    /**
+     * @brief Copy constructor for the Player class.
+     * @param other The player to copy from.
+     */
     Player(const Player &other)
         : game(other.game), name(other.name), coinsNum(other.coinsNum), 
           freeMoves(other.freeMoves), lastcoinsNum(other.lastcoinsNum), 
@@ -43,14 +57,24 @@ public:
           isBlocked(other.isBlocked), blockToBribe(other.blockToBribe), 
           preventToArrest(other.preventToArrest) {}
      
-            virtual bool operator==(Player &player){
-                return name==player.name;
-            } 
-            
-            virtual Player& operator=(const Player &player){
-                if(this==&player){
-                    return *this;
-                }
+    /**
+     * @brief Assignment operator for the Player class.
+     * @param other The player to assign from.
+     * @return A reference to this player.
+     */
+    virtual bool operator==(Player &player){
+        return name==player.name;
+    } 
+    
+    /**
+     * @brief Assignment operator for the Player class.
+     * @param player The player to assign from.
+     * @return A reference to this player.
+     */
+    virtual Player& operator=(const Player &player){
+        if(this==&player){
+        return *this;
+        }
                 name=player.name;
                 coinsNum=player.coinsNum;
                 role=player.role;
@@ -64,7 +88,7 @@ public:
                 freeMoves=player.freeMoves;
                 lastcoinsNum=player.lastcoinsNum;
                 return *this;
-            }
+    }
   
            
             virtual int coins() const =0;//returns the number of coins the player has
@@ -105,6 +129,12 @@ public:
                 return blockToBribe;
             }
             virtual void skipTurn();
+
+            
+            virtual void setLastMove(std::string move){
+                lastMove.push_back(move);
+            }
+
 
          
 

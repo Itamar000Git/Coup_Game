@@ -536,6 +536,22 @@ TEST_CASE("Egde Cases"){
         
     
     }
+
+     SUBCASE("Test multipul undo for more then last turn"){
+        for(int i = 0; i <= 4; ++i) {
+            gov.gather();
+            spy.tax();   
+            baron.gather();
+            gen.gather();
+            judge.tax();
+            merchant.gather();
+        }
+        CHECK(spy.coins() == 10);
+        gov.undo(spy);
+        CHECK(spy.coins() == 8);
+        CHECK_THROWS_AS(gov.undo(spy), std::runtime_error); //Gov can't undo again
+        
+     }
         
 }
 

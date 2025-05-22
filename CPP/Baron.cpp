@@ -11,6 +11,11 @@
 
 namespace coup{
 
+    /**
+     * @brief Constructor for the Baron class.
+     * @param game1 The game instance.
+     * @param name1 The name of the player.
+     */
     Baron::Baron(Game &game1, const std::string &name1)
         : Player(game1, name1) { 
         this->role = "Baron"; 
@@ -41,9 +46,11 @@ namespace coup{
 
 
 
-
+    /**
+     * @brief Override the gather method because the Baron still getting pay when sanctioned.
+     * @throws std::runtime_error if it's not the player's turn , if the player has too many coins, if the player is blocked by bribe and after bride.
+    */
     void Baron::gather(){
-    
         if(game.turn()!=name){
             throw std::runtime_error("This is not your turn");
         }
@@ -57,8 +64,6 @@ namespace coup{
         if(preventToArrest==true){
             setPreventToArrest(false);
         }
-
-        
         if(blockToBribe==true){
             setPreventToBribe(false);
             freeMoves=0;
@@ -67,7 +72,7 @@ namespace coup{
             throw std::runtime_error("You are blocked by bribe");
         }
         starter();
-        coinsNum++; //need to add check if there is a block
+        coinsNum++; 
         std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
         if(freeMoves>0){
@@ -76,10 +81,12 @@ namespace coup{
         else{
             game.nextTurn();
         }
-    
         lastMove.push_back("gather");
     }
-
+    /**
+     * @brief Override the tax method because the Baron still getting pay when sanctioned.
+     * @throws std::runtime_error if it's not the player's turn , if the player has too many coins, if the player is blocked by bribe and after bride.
+    */
     void Baron::tax(){
         int num =2;
         if(game.turn()!=name){
@@ -119,6 +126,11 @@ namespace coup{
         lastMove.push_back("tax");
     }
 
+    /**
+     * @brief Spatially for the Baron, the invest method is used to get 6 coins by paying 3 coins.
+     * @throws std::runtime_error if it's not the player's turn , if the player has too many coins,
+     *  if the player is blocked by bribe and after bride ,if the player has less than 3 coins.
+    */
     void Baron::invest(){ 
         if(game.turn()!=name){
             throw std::runtime_error("This is not your turn");

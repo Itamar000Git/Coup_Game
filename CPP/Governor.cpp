@@ -11,7 +11,11 @@
 #include "../HPP/Baron.hpp"
 
 namespace coup{  
-
+    /**
+     * @brief Constructor for the Governor class.
+     * @param game1 The game instance.
+     * @param name1 The name of the player.
+     */
    Governor::Governor(Game &game1, const std::string &name1)
    : Player(game1, name1) { 
        this->role = "Governor"; 
@@ -37,6 +41,7 @@ namespace coup{
         return role;
      }
 
+    
     void Governor::undo( Player &player){
         
         if(player.getIsAlived()==false){
@@ -71,9 +76,10 @@ namespace coup{
             }
 
             player.setLastCoinNum(player.coins()-2); //undo tax -2 coins
+
         }
        
-
+        player.setLastMove("undo tax");
         std::cout <<"undo with: " << name<< " that is "<< role<<std::endl;
     }
 
