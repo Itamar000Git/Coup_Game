@@ -57,7 +57,7 @@ namespace coup{
         if(coinsNum>=10){
             throw std::runtime_error("You have too many coins you need to coup");
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //if baron is sanctioned he still can take gather
             
             setIsBlocked(false);
         }
@@ -68,7 +68,7 @@ namespace coup{
             setPreventToBribe(false);
             freeMoves=0;
             game.nextTurn();            
-            lastMove.push_back("gather");
+            //lastMove.push_back("gather");
             throw std::runtime_error("You are blocked by bribe");
         }
         starter();
@@ -97,7 +97,7 @@ namespace coup{
             throw std::runtime_error("You have too many coins you need to coup");
             return;
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //if baron is sanctioned he still can take part of the tax
             num=1;
             setIsBlocked(false);
         }
@@ -109,11 +109,11 @@ namespace coup{
             freeMoves=0;
             game.nextTurn();
             
-            lastMove.push_back("tax");
+            //lastMove.push_back("tax");
             throw std::runtime_error("You are blocked by bribe");
             return;
         }
-        lastcoinsNum=coinsNum;
+        lastcoinsNum=coinsNum; //save the last coins number in case of undo tax
         coinsNum=coinsNum+num;
         std::cout <<"tax with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
@@ -140,14 +140,14 @@ namespace coup{
             throw std::runtime_error("You have too many coins you need to coup");
             return;
         }
-        if(coinsNum<3){
+        if(coinsNum<3){ //the player has less than 3 coins
             throw std::runtime_error("You dont have enough coins");
             return;
         }
         if(preventToArrest==true){
             setPreventToArrest(false);
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //this action cant be blocked by sanction
             setIsBlocked(false);
         }
         if(blockToBribe==true){

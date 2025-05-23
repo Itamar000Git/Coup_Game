@@ -47,38 +47,34 @@ namespace coup{
      *  if the last move is not coup, if the player has less than 5 coins, if the player is blocked by bribe.
      */
     void General::undo( Player &player){
-        if(getIsAlived()==false){
+        if(getIsAlived()==false){ //the player is dead
             throw std::runtime_error("You cant coup a dead player");
             return;
         }
         
-        if(player.getIsAlived()==false){
+        if(player.getIsAlived()==false){ //the other player is dead
             throw std::runtime_error("You cant coup a dead player");
             return;
         }
-        if(player.getLastMove().empty()){
+        if(this==&player){ //the player uncouping himself (implement in a different way)
+            throw std::runtime_error("You cant arrest yourself");
+        }
+        if(player.getLastMove().empty()){ //there is no last move to undo
             throw std::runtime_error("There is no last move to undo");
             return;
         }
         std::string last = player.getLastMove().back();
-        if(last!="coup"){
+        if(last!="coup"){ //the last move is not coup
             throw std::runtime_error("Last move is not coup");
             return;
         }
-        if(coinsNum<5){
+        if(coinsNum<5){ //the player has less than 5 coins
             throw std::runtime_error("You dont have enough coins");
             return;
         }
-        if(blockToBribe==true){
-            setPreventToBribe(false);
-            game.nextTurn();
-            freeMoves=0;
-            lastMove.push_back("arrest");
-            throw std::runtime_error("You are blocked by bribe");
-            return;
-        }
-        coinsNum=coinsNum-5;
-        game.uncoupLastCoupedPlayer();
+       
+        coinsNum=coinsNum-5; //pay 5 coins to the bank
+        game.uncoupLastCoupedPlayer(); //uncoup the last couped player
         player.setLastMove("undo coup");
         std::cout <<"undo coup with: " << name<< " that is "<< role<<std::endl;
         
@@ -90,7 +86,7 @@ namespace coup{
      */
     void General::setIsAlivedGui(bool alive) {
         if (alive == false && coinsNum >= 5) {
-            bool check = askToStayAlive();
+            bool check = askToStayAlive(); // Ask the player if they want to pay 5 coins to stay alive
             if (check == false) {
                 Alive = alive;
                 return;
@@ -115,7 +111,7 @@ namespace coup{
             return false;
         }
 
-        sf::Text questionText("Do you want to pay 5 coins to stay alive?", font, 18);
+        sf::Text questionText("Do you want to pay 5 coins to stay alive?", font, 18); // Create the question text
         questionText.setFillColor(sf::Color::Black);
         questionText.setPosition(20, 50);
 
@@ -146,12 +142,12 @@ namespace coup{
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
-                    if (yesButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (yesButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) { //getting the mouse position on yes button
                         window.close();
                         return true; 
                     }
 
-                    if (noButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (noButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) { //getting the mouse position on no button
                         window.close();
                         return false; 
                     }

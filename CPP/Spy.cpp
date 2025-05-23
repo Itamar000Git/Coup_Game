@@ -11,6 +11,11 @@
 
 namespace coup{  
 
+    /**
+     * @brief Constructor for the Spy class.
+     * @param game The game instance.
+     * @param name1 The name of the player.
+     */
     Spy::Spy(Game &game1, const std::string &name1)
         : Player(game1, name1) { 
         this->role = "Spy"; 
@@ -36,9 +41,12 @@ namespace coup{
             return role;
         }
 
-    void Spy::undo( Player &player){
-        std::cout <<"undo with:" << name<< " that is"<< role<<std::endl;
-    }
+    /**
+     * @brief The player cant undo a move
+     * @param player The player to be undo the last move
+     * @throws std::runtime_error this player cant undo a move
+     */
+    
 
 
 }

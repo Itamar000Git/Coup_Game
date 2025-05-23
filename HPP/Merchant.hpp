@@ -15,8 +15,17 @@ namespace coup{
             
 
         public:
-                Merchant(Game &game, const std::string &name1);
+                Merchant(Game &game, const std::string &name1);// Constructor for the Merchant class
                 using Player::operator=; // Bring base class operator= into scope
+
+                /**
+                 * @brief Assignment operator for the Merchant class.
+                 * @param other The Merchant object to assign from.
+                 * @return A reference to this Merchant object.
+                 * 
+                 * This operator allows for assignment between Merchant objects.
+                 * It first checks for self-assignment and then calls the base class assignment operator.
+                 */
                 Merchant &operator=(const Merchant &other) {
                 if (this == &other) {
                     return *this;
@@ -24,11 +33,19 @@ namespace coup{
                 Player::operator=(other); // Call base class assignment operator
                 return *this;
             }         
-                int coins() const;
-                std::string getName();
-                void undo( Player &player);
+                int coins() const;//returns the number of coins the player has
+                std::string getName();//returns the name of the player
+
+                /**
+                 * @brief The player cant undo a move
+                 * @param player The player to be undo the last move
+                 * @throws std::runtime_error this player cant undo a move
+                 */
+                void undo( Player &player){
+                     throw std::runtime_error("You cant undo a anything");
+                }
                 
-                void deleteLastMove();
+                
                 std::string getRoll();
                 void setIsBlocked(bool block){
                     isBlocked = block;

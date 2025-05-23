@@ -17,32 +17,31 @@ namespace coup
      */
     void Player::gather(){
     
-        if(game.turn()!=name){
+        if(game.turn()!=name){ //this is not the player's turn
             throw std::runtime_error("This is not your turn");
         }
-        if(coinsNum>=10){
+        if(coinsNum>=10){ //the player has too many coins and need to coup
             throw std::runtime_error("You have too many coins you need to coup");
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //the player is sanctioned and cant take gather
             throw std::runtime_error("You are blocked");
         }
-        if(preventToArrest==true){
+        if(preventToArrest==true){ //abort the action if the player is prevented to arrest
             setPreventToArrest(false);
         }
-
         
-        if(blockToBribe==true){
-            setPreventToBribe(false);
-            freeMoves=0;
-            game.nextTurn();            
-            lastMove.push_back("gather");
+        if(blockToBribe==true){ //the player is blocked by bribe
+            setPreventToBribe(false); //abort the block
+            freeMoves=0; //decrease the free moves
+            game.nextTurn(); // move to the next player            
+            //lastMove.push_back("gather"); 
             throw std::runtime_error("You are blocked by bribe");
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
         coinsNum++; //need to add check if there is a block
         std::cout <<"gather with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
-        if(freeMoves>0){
+        if(freeMoves>0){ // check if there is a free move relevant only after bribe
             freeMoves--;
         }
         else{
@@ -74,13 +73,13 @@ namespace coup
             setPreventToBribe(false);
             game.nextTurn();
             freeMoves=0;
-            lastMove.push_back("tax");
+            //lastMove.push_back("tax");
             throw std::runtime_error("You are blocked by bribe");
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
 
-        coinsNum+=2; 
-        std::cout <<"tax with:" << name<< " that is"<< role<<std::endl;
+        coinsNum+=2; //tax 2 coins from the bank
+        std::cout <<"tax with: " << name<< " that is"<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
         if(freeMoves>0){
             freeMoves--;
@@ -105,16 +104,16 @@ namespace coup
             throw std::runtime_error("You have too many coins you need to coup");
             
         }
-        if(coinsNum<=3){
+        if(coinsNum<=3){ //the player has less than 3 coins
             throw std::runtime_error("You dont have enough coins");
         }
         if(preventToArrest==true){
             setPreventToArrest(false);
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //abort the block when the player play a different action from gather or tax
             setIsBlocked(false);
         }
-        if(blockToBribe==true){
+        if(blockToBribe==true){ //if in real time the player is blocked by bribe
             setPreventToBribe(false);
             freeMoves=0;
 
@@ -124,11 +123,11 @@ namespace coup
             throw std::runtime_error("You are blocked by bribe");
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
-        coinsNum=coinsNum-4;
-        freeMoves=1;
+        coinsNum=coinsNum-4; //bribe cost 4 coins
+        freeMoves=1; //the player get 2 moves
         lastMove.push_back("bribe");
 
-        std::cout <<"bride with:" << name<< " that is "<< role<<std::endl;
+        std::cout <<"bride with: " << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
     }
   
@@ -147,20 +146,20 @@ namespace coup
         if(coinsNum>=10){
             throw std::runtime_error("You have too many coins you need to coup");
         }
-        if(preventToArrest==true){
+        if(preventToArrest==true){ //the player is prevented to arrest
             throw std::runtime_error("You are blocked");
         }
-        if(this==&player){
+        if(this==&player){ //the player is arresting himself
             throw std::runtime_error("You cant arrest yourself");
         }
-        if(player.getName()==game.lastArrested()){
+        if(player.getName()==game.lastArrested()){ //the player is the last arrested player
             throw std::runtime_error("You cant arrest the same player twice");
         }
-        if(player.getIsAlived()==false){
+        if(player.getIsAlived()==false){ //the player is dead
             throw std::runtime_error("You cant arrest a dead player");
         }
         int num=player.coins();
-        if(num==0){
+        if(num==0){ //the player has no coins
             throw std::runtime_error("You cant arrest a player with 0 coins");
         }
         if(isBlocked==true){
@@ -182,14 +181,14 @@ namespace coup
             if(num==1){
                 throw std::runtime_error("You dont have enough coins to arrest Merchent ");
             }
-            player.setLastCoinNum(num-2);
+            player.setLastCoinNum(num-2); //in case of merchant we need to pay 2 coins to the bank instead of 1
         }
         else{
-            player.setLastCoinNum(num-1);
-            coinsNum=coinsNum+1;
+            player.setLastCoinNum(num-1);//for all the other players we take 1 coin
+            coinsNum=coinsNum+1; //add 1 coin to the arresting player
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
-        game.setLastArrest(player.getName());
+        game.setLastArrest(player.getName()); //set the last arrested player
         if(freeMoves>0){
             freeMoves--;
         }
@@ -221,7 +220,7 @@ namespace coup
         if(player.getIsAlived()==false){
             throw std::runtime_error("You cant sanction a dead player");
         }
-        if(this==&player){
+        if(this==&player){ //the player is sanctioning himself
             throw std::runtime_error("You cant sanction yourself");
         }        
         if(preventToArrest==true){
@@ -244,13 +243,13 @@ namespace coup
         if(player.getRoll()=="Judge"){ //for sanction a judge we need to pay 4 coins instead of 3
             lim=4;
         }
-        if(num<lim){
+        if(num<lim){ //the player has less than 3 or 4 coins(depends on the role)
             throw std::runtime_error("You dont have enough coins");
 
         }
        
-        coinsNum=coinsNum-lim;
-        player.setIsBlocked(true);
+        coinsNum=coinsNum-lim; //pay 3 or 4 coins to the bank
+        player.setIsBlocked(true); //set the player as blocked
 
         if(freeMoves>0){
             freeMoves--;
@@ -275,7 +274,7 @@ namespace coup
             throw std::runtime_error("This is not your turn");
             return;
         }
-        if(coinsNum<7){
+        if(coinsNum<7){ //the player has less than 7 coins
             throw std::runtime_error("You dont have enough coins");
             return;
         }
@@ -301,12 +300,12 @@ namespace coup
             return;
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
-        coinsNum=coinsNum-7;
-        if(gui==true){
-             player.setIsAlivedGui(false);
+        coinsNum=coinsNum-7; //coup cost 7 coins
+        if(gui==true){ //when using the gui we use a different function to set the player as dead
+             player.setIsAlivedGui(false); //in case of genral he can save himself
         }
         else{
-            player.setIsAlived(false);
+            player.setIsAlived(false); //in case of genral he can save himself
 
         }
         
@@ -354,7 +353,7 @@ namespace coup
             freeMoves--;
         }
         else{
-            game.nextTurn();
+            game.nextTurn(); //move to the next player
         }
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
         lastMove.push_back("skip");

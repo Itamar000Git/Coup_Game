@@ -28,7 +28,7 @@ namespace coup
             std::vector<Player*> coupedPlayers;
     
         public:
-        //
+        
             Game();
             void addPlayer(Player* player);
             int& getNumOfPlayers();
@@ -42,11 +42,11 @@ namespace coup
             void setCoupedPlayers(Player* player){
                 coupedPlayers.push_back(player);
             }
-            void uncoupLastCoupedPlayer();
-            std::string winner();
-            void removePlayer(Player* player);
-            void nextTurn();
-            std::string lastArrested();
+            void uncoupLastCoupedPlayer(); 
+            std::string winner(); // get the winner of the game
+            void removePlayer(Player* player); // remove the player from the game
+            void nextTurn(); // move to the next player
+            std::string lastArrested(); // get the last arrested player
 
             /**
              * @brief Set the last arrested player
@@ -57,7 +57,7 @@ namespace coup
             }
             
 
-            friend std::ostream& operator<<(std::ostream& os, const Game& game);
+            friend std::ostream& operator<<(std::ostream& os, const Game& game); //override the << operator to print the game state
 
             
         

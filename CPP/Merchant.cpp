@@ -11,6 +11,11 @@
 
 namespace coup{  
 
+    /**
+     * @brief Constructor for the Merchant class.
+     * @param game The game instance.
+     * @param name1 The name of the player.
+     */
     Merchant::Merchant(Game &game1, const std::string &name1)
     : Player(game1, name1) { 
         this->role = "Merchant"; 
@@ -36,9 +41,8 @@ namespace coup{
         return role;
      }
 
-    void Merchant::undo( Player &player){
-        std::cout <<"undo with:" << name<< "that is"<< role<<std::endl;
-    }
+    
+   
    
 
 }

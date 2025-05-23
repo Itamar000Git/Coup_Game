@@ -21,34 +21,45 @@
 #include "HPP/main.hpp"
 using namespace coup;
 
-
+/**
+ * @brief Entry point of the Coup game GUI application.
+ * Initializes the game, prompts for player information via GUI,
+ * creates players, starts the game board display, deletes players, and exits.
+ * @return int Returns 0 on successful execution.
+ */
 int main() {
 
     Game game_2{};
     int numPlayers = 0;
     std::vector<std::string> playerNames;
-    mainwin(numPlayers, playerNames);
+    mainwin(numPlayers, playerNames); // Call the main window function to get the number of players and their names
     
     std::vector<Player*> players(numPlayers);
-    for (int i = 0; i < numPlayers; ++i) {
+    for (int i = 0; i < numPlayers; ++i) { // initialize the players vector
         players[i] = nullptr;
     }
     for (int i = 0; i < numPlayers; ++i) {
-        players[i]=drawCard(playerNames[i], game_2);
+        players[i]=drawCard(playerNames[i], game_2); // Create a new player with a random role
     }
 
 
-     displayCoupBoard(players,game_2);
+     displayCoupBoard(players,game_2); // Display the game board with the players
 
 
    
-    for (auto player : players) {
+    for (auto player : players) { // Clean up the dynamically allocated players
         delete player;
     }
 
    return 0;
 }
 
+/**
+ * @brief Draws a random card (player role) for a player.
+ * @param name The name of the player.
+ * @param game The game instance.
+ * @return A pointer to the created Player object.
+ */
 Player* drawCard(std::string name, Game &game) {
     static bool initialized = false;
     if (!initialized) {
@@ -67,7 +78,14 @@ Player* drawCard(std::string name, Game &game) {
    
 }
 
-
+/**
+ * @brief Displays the main window for the game.
+ * Prompts the user to start the game,and moves to the sign-in screen.
+ * @param numPlayers Reference to the number of players.
+ * @param players Reference to the vector of player names.
+ * @throws std::runtime_error if the font fails to load. 
+ * 
+ */
 void mainwin(int& numPlayers, std::vector<string>& players) {
     sf::RenderWindow mainwindow(sf::VideoMode(800, 600), "Coup");
     sf::Font font;
@@ -124,10 +142,16 @@ void mainwin(int& numPlayers, std::vector<string>& players) {
 }
 
 
-
+/**
+ * @brief Prompts the user to enter the number of players and their names.
+ * Gets the number of players and their names from the user.
+ * @param numPlayers Reference to the number of players.
+ * @param players Reference to the vector of player names.
+ * @throws std::runtime_error if the font fails to load.
+ * Shows an error message if the input is invalid.
+ */
 void signIn(int& numPlayers, std::vector<std::string>& players) {
     sf::RenderWindow window(sf::VideoMode(500, 350), "Choose Number of Players");
-
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
         std::cerr << "Failed to load font\n";
@@ -139,7 +163,7 @@ void signIn(int& numPlayers, std::vector<std::string>& players) {
     inputDisplay.setFillColor(sf::Color::Black);
     inputDisplay.setPosition(250 - 10, 130);
 
-    sf::Text prompt("Enter number of players (2 - 6):", font, 22);
+    sf::Text prompt("Enter number of players (2 - 6):", font, 22); //Prompt text
     prompt.setFillColor(sf::Color(50, 50, 50));
     prompt.setPosition(250 - prompt.getGlobalBounds().width / 2, 70);
 
@@ -177,13 +201,13 @@ void signIn(int& numPlayers, std::vector<std::string>& players) {
                     inputText.clear();
                     inputDisplay.setString("");
                 } else if (std::isdigit(c)) {
-                    if (c >= '2' && c <= '6') {
+                    if (c >= '2' && c <= '6') { //if the input valid update selected number
                         inputText = c;
                         selectedNumber = c - '0';
                         validInput = true;
                         errorText.setString("");
                         inputDisplay.setString(inputText);
-                    } else {
+                    } else { //if the input not valid show an error
                         inputText = "";
                         inputDisplay.setString("");
                         errorText.setString("Only numbers between 2 and 6 are allowed.");
@@ -192,18 +216,18 @@ void signIn(int& numPlayers, std::vector<std::string>& players) {
                 }
             }
 
-  
+            // Check for Enter key press
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
                 if (validInput) {
-                    numPlayers = selectedNumber;
+                    numPlayers = selectedNumber; //update number of player refernce
                     window.close();
-                    get_members(numPlayers, players);
+                    get_members(numPlayers, players); //call the get member method
                 } else {
                     errorText.setString("Please enter a valid number (2-6).");
                 }
             }
 
-
+            // Check for mouse movement
             if (event.type == sf::Event::MouseMoved) {
                 if (button.getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
                     button.setFillColor(sf::Color(120, 120, 200));
@@ -211,7 +235,7 @@ void signIn(int& numPlayers, std::vector<std::string>& players) {
                     button.setFillColor(sf::Color(180, 180, 250));
             }
 
-
+            // Check for mouse button press
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -237,9 +261,16 @@ void signIn(int& numPlayers, std::vector<std::string>& players) {
     }
 }
 
+
+/**
+ * @brief Prompts the user to enter player names.
+ * @param num Reference to the number of players.
+ * @param players Reference to the vector of player names.
+ * @throws std::runtime_error if the font fails to load.
+ * Shows an error message if the input is invalid.
+ */
 void get_members(int& num, std::vector<std::string>& players) {
     sf::RenderWindow window(sf::VideoMode(500, 250), "Enter Player Names");
-
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
         std::cerr << "Failed to load font\n";
@@ -280,6 +311,7 @@ void get_members(int& num, std::vector<std::string>& players) {
     errorText.setPosition(50, 180);
 
     while (window.isOpen()) {
+        // Update prompt text with the current player number
         promptText.setString("Enter name for player " + std::to_string(index + 1) + " of " + std::to_string(num));
 
         sf::Event event;
@@ -308,20 +340,20 @@ void get_members(int& num, std::vector<std::string>& players) {
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                    if (current.empty()) {
-                        errorMsg = "Name cannot be empty.";
+                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) { // Check if the button is clicked
+                    if (current.empty()) { // Check if the input is empty
+                        errorMsg = "Name cannot be empty."; 
                         errorClock.restart();
-                    } else if (unique.count(current)) {
+                    } else if (unique.count(current)) { // Check if the name is already used
                         errorMsg = "Name already used.";
                         errorClock.restart();
                     } else {
-                        names.push_back(current);
+                        names.push_back(current); // Add the name to the list
                         unique.insert(current);
                         current.clear();
                         inputText.setString("");
                         index++;
-                        if (index == num) {
+                        if (index == num) { // If all names are entered
                             players = names;
                             window.close();
                         }
@@ -346,6 +378,13 @@ void get_members(int& num, std::vector<std::string>& players) {
         window.display();
     }
 }
+
+
+/**
+ * @brief Displays the number of coins a player has in a separate window.
+ * @param player Pointer to the Player object.
+ * @throws std::runtime_error if the font fails to load.
+ */
     void displayCoins(const Player* player){
         sf::RenderWindow window(sf::VideoMode(300, 200), "Player Coins");
         sf::Font font;
@@ -354,13 +393,13 @@ void get_members(int& num, std::vector<std::string>& players) {
             return;
         }
 
-        sf::Text text("Coins: " + std::to_string(player->coins()), font, 24);
+        sf::Text text("Coins: " + std::to_string(player->coins()), font, 24); // Display the number of coins
         text.setFillColor(sf::Color::Black);
         text.setPosition(50, 50);
 
         while (window.isOpen()) {
             sf::Event event;
-            while (window.pollEvent(event)) {
+            while (window.pollEvent(event)) { // Show the number of coins until the user closes the window
                 if (event.type == sf::Event::Closed)
                     window.close();
             }
@@ -372,17 +411,28 @@ void get_members(int& num, std::vector<std::string>& players) {
         window.close();
     }
 
-
+/**
+ * @brief Updates the coin texts for each player.
+ * @param coinTexts Vector of sf::Text objects for displaying coins.
+ * @param players Vector of Player pointers.
+ * @throws std::runtime_error if the font fails to load.
+ */
     void updateCoinTexts(std::vector<sf::Text>& coinTexts, const vector<Player*>& players) {
         for (size_t i = 0; i < players.size(); ++i) {
-            coinTexts[i].setString("Coins: " + std::to_string(players[i]->coins()));
+            coinTexts[i].setString("Coins: " + std::to_string(players[i]->coins())); // Update the coin text for each player
         }
     }
 
+/**
+ * @brief Updates the alive texts for each player.
+ * @param aliveTexts Vector of sf::Text objects for displaying alive status.
+ * @param players Vector of Player pointers.
+ * @throws std::runtime_error if the font fails to load.
+ * */
     void updateAliveTexts(std::vector<sf::Text>& aliveTexts,const vector<Player*>& players){
-        for (size_t i = 0; i < players.size(); ++i) {
+        for (size_t i = 0; i < players.size(); ++i) { // Update the alive text for each player
             if (players[i]->getIsAlived()) {
-                aliveTexts[i].setString("Alive");
+                aliveTexts[i].setString("Alive"); 
                 aliveTexts[i].setFillColor(sf::Color::Green);
             } else {
                 aliveTexts[i].setString("Dead");
@@ -392,6 +442,14 @@ void get_members(int& num, std::vector<std::string>& players) {
         }
     }
 
+/**
+ * @brief Displays the Coup game board with player information and actions.
+ * @param players Vector of Player pointers.
+ * @param game Reference to the Game object.
+ * @throws std::runtime_error if the font fails to load.
+ * Shows the game board with player names, coins, and action buttons.
+ * Handles user interactions for various actions like gathering, taxing, bribing, etc.
+ */
 void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     sf::RenderWindow window(sf::VideoMode(1550, 250 + players.size() * 80), "Coup Board");
     sf::Font font;
@@ -447,7 +505,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
 
 
     
-    for (size_t i = 0; i < players.size(); ++i) {
+    for (size_t i = 0; i < players.size(); ++i) { // Loop through each player to update their information
         std::string playerInfo = players[i]->getName() + " - " + players[i]->getRoll();
 
         if (players[i]->getIsAlived()) {
@@ -458,7 +516,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             aliveTexts[i].setFillColor(sf::Color::Red);
         }
  
-        
+        // Set up the text and buttons for each player
         aliveTexts[i].setFont(font);
         aliveTexts[i].setCharacterSize(20);
         aliveTexts[i].setPosition(130, 80 + i * 80);
@@ -545,6 +603,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
         skipTexts[i].setString("Skip");
         skipTexts[i].setPosition(1170 + 27, 80 + i * 80 + 5);
 
+        // Set up the buttons and texts for the Baron unique actions
         if (players[i]->getRoll() == "Baron") {
             investButtons[i].setSize(sf::Vector2f(110, 40));
             investButtons[i].setFillColor(sf::Color (200, 100, 0));
@@ -557,7 +616,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             investTexts[i].setPosition(1290 + 25, 80 + i * 80 + 5);
         }
 
-
+        // Set up the buttons and texts for the Spy unique actions
         if (players[i]->getRoll() == "Spy") {
             showCoinsButtons[i].setSize(sf::Vector2f(110, 40));
             showCoinsButtons[i].setFillColor(sf::Color (0, 100, 150));
@@ -580,6 +639,7 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             prevArrestTexts[i].setPosition(1410 + 10, 80 + i * 80 + 5);
         }
 
+        // Set up the buttons and texts for the Governor, General, Judge unique actions
         if (players[i]->getRoll() == "Governor" || players[i]->getRoll() == "General" || players[i]->getRoll() == "Judge") {
             undoButtons[i].setSize(sf::Vector2f(110, 40));
             undoButtons[i].setFillColor(sf::Color (50, 100, 150));
@@ -591,6 +651,8 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
             undoTexts[i].setString("Undo");
             undoTexts[i].setPosition(1290 + 25, 80 + i * 80 + 5);
         }
+
+        // Create the circles for block to bribe, prevent arrest, and sanctioned
          sf::CircleShape blockToBribeCircle(10);
         blockToBribeCircle.setPosition(20, 80 + i * 80 + 5);
         if (players[i]->isBlockToBribe()) {
@@ -623,41 +685,42 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
     }
 
 
-
+    // Set up the legend box and its contents to explayin the colors
     sf::RectangleShape legendBox(sf::Vector2f(200, 120));
-legendBox.setFillColor(sf::Color(240, 240, 240));
-legendBox.setOutlineColor(sf::Color::Black);
-legendBox.setOutlineThickness(2);
-legendBox.setPosition(1350, 250 + players.size() * 80 - 180);
+    legendBox.setFillColor(sf::Color(240, 240, 240));
+    legendBox.setOutlineColor(sf::Color::Black);
+    legendBox.setOutlineThickness(2);
+    legendBox.setPosition(1350, 250 + players.size() * 80 - 180);
 
-sf::Text legendTitle("Legend", font, 20);
-legendTitle.setFillColor(sf::Color::Black);
-legendTitle.setPosition(1360, 250 + players.size() * 80 - 170);
+    sf::Text legendTitle("Legend", font, 20);
+    legendTitle.setFillColor(sf::Color::Black);
+    legendTitle.setPosition(1360, 250 + players.size() * 80 - 170);
 
-sf::CircleShape legendBlockToBribe(10);
-legendBlockToBribe.setFillColor(sf::Color(255, 165, 0)); // Orange
-legendBlockToBribe.setPosition(1360, 250 + players.size() * 80 - 140);
+    sf::CircleShape legendBlockToBribe(10);
+    legendBlockToBribe.setFillColor(sf::Color(255, 165, 0)); // Orange
+    legendBlockToBribe.setPosition(1360, 250 + players.size() * 80 - 140);
 
-sf::Text legendBlockToBribeText("Block to Bribe", font, 16);
-legendBlockToBribeText.setFillColor(sf::Color::Black);
-legendBlockToBribeText.setPosition(1380, 250 + players.size() * 80 - 140);
+    sf::Text legendBlockToBribeText("Block to Bribe", font, 16);
+    legendBlockToBribeText.setFillColor(sf::Color::Black);
+    legendBlockToBribeText.setPosition(1380, 250 + players.size() * 80 - 140);
 
-sf::CircleShape legendPreventArrest(10);
-legendPreventArrest.setFillColor(sf::Color::Blue); // Blue
-legendPreventArrest.setPosition(1360, 250 + players.size() * 80 - 115);
+    sf::CircleShape legendPreventArrest(10);
+    legendPreventArrest.setFillColor(sf::Color::Blue); // Blue
+    legendPreventArrest.setPosition(1360, 250 + players.size() * 80 - 115);
 
-sf::Text legendPreventArrestText("Prevent Arrest", font, 16);
-legendPreventArrestText.setFillColor(sf::Color::Black);
-legendPreventArrestText.setPosition(1380, 250 + players.size() * 80 - 115);
+    sf::Text legendPreventArrestText("Prevent Arrest", font, 16);
+    legendPreventArrestText.setFillColor(sf::Color::Black);
+    legendPreventArrestText.setPosition(1380, 250 + players.size() * 80 - 115);
 
-sf::CircleShape legendSanctioned(10);
-legendSanctioned.setFillColor(sf::Color::Magenta); // Magenta
-legendSanctioned.setPosition(1360, 250 + players.size() * 80 - 90);
+    sf::CircleShape legendSanctioned(10);
+    legendSanctioned.setFillColor(sf::Color::Magenta); // Magenta
+    legendSanctioned.setPosition(1360, 250 + players.size() * 80 - 90);
 
-sf::Text legendSanctionedText("Sanctioned", font, 16);
-legendSanctionedText.setFillColor(sf::Color::Black);
-legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
+    sf::Text legendSanctionedText("Sanctioned", font, 16);
+    legendSanctionedText.setFillColor(sf::Color::Black);
+    legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
 
+   
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -667,147 +730,160 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
             if (event.type == sf::Event::MouseButtonPressed) {
                 try{
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                for (size_t i = 0; i < players.size(); ++i) {
+                // for each player check if the mouse is over the buttons
+                for (size_t i = 0; i < players.size(); ++i) { 
+                    // Check if the mouse is over the gather button
                     if (gatherButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Gather!\n";
-                        players[i]->gather();
+                        players[i]->gather(); // Call the gather method
                         
                     }
+
+                    // Check if the mouse is over the tax button
                     if (taxButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Tax!\n";
-                        players[i]->tax();
+                        players[i]->tax(); // Call the tax method
                     }
+                    // Check if the mouse is over the bribe button
                     if (bribeButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Bribe!\n";
-                        players[i]->bribe();
+                        players[i]->bribe();// Call the bribe method
                     }
+                    // Check if the mouse is over the arrest button
                     if (arrestButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        //std::cout << players[i]->getName() << " performed Arrest!\n";
-                          if (players[i]->getName() != game.turn()) {
+                        if (players[i]->getName() != game.turn()) { // Check if it's the player's turn
                             throw std::runtime_error("This is not your turn");
-                          }
-                                Player* target = selectPlayerForAction(players, players[i]);
-                                if (target != nullptr) {
-                                    std::cout << players[i]->getName() << " performed Arrest on " << target->getName() << "!\n";
-                                    players[i]->arrest(*target);
+                        }
+                        Player* target = selectPlayerForAction(players, players[i]); // Select a target for the action
+                        if (target != nullptr) {
+                            std::cout << players[i]->getName() << " performed Arrest on " << target->getName() << "!\n";
+                            players[i]->arrest(*target); // Call the arrest method on the selected target
 
-                                }
+                        }
                             
                         
                     }
+                    // Check if the mouse is over the sanction button
                     if (sanctionButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                        
-                        if (players[i]->getName() != game.turn()) {
+                        if (players[i]->getName() != game.turn()) { // Check if it's the player's turn
                             throw std::runtime_error("This is not your turn");
                           }
-                        Player* target = selectPlayerForAction(players, players[i]);
+                        Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Sanction on " << target->getName() << "!\n";
-                            players[i]->sanction(*target);
+                            players[i]->sanction(*target); // Call the sanction method on the selected target
+                            // update the status circles
                             updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
                         }
                      
                     }
+                    // Check if the mouse is over the coup button
                     if (coupButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         
-                        if (players[i]->getName() != game.turn()) {
+                        if (players[i]->getName() != game.turn()) { // Check if it's the player's turn
                             throw std::runtime_error("This is not your turn");
                         }
-                        Player* target = selectPlayerForAction(players, players[i]);
+                        Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Coup on " << target->getName() << "!\n";
     
-                                  players[i]->coup(*target,true); 
-                                    updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
+                            players[i]->coup(*target,true); // Call the coup method on the selected target
+                            // update the status circles
+                            updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
-                                    int numAlive = 0;
-                                  for(int i=0;i<players.size();i++){
-                                    if(players[i]->getIsAlived()){
-                                       numAlive++;
-                                    }
-                                  }
-                                  if(numAlive==1){
-                                    cout<<"Game Over"<<endl;
-                                    string str= game.winner();
-                                    endGame(str);
-                                    window.close();
-                                  }
-                                
-         
-
+                            int numAlive = 0;
+                            for(int i=0;i<players.size();i++){ // check how many players are alive
+                                if(players[i]->getIsAlived()){
+                                    numAlive++;
+                                }
+                            }
+                            if(numAlive==1){ // if only one player is alive
+                                cout<<"Game Over"<<endl;
+                                string str= game.winner(); // get the winner
+                                endGame(str);
+                                window.close();
+                            }
+                            // update the status circles
                             updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
                         }
                         
                     }
+                    // Check if the mouse is over the invest button (only for Baron)
                     if (players[i]->getRoll() == "Baron" && investButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Invest!\n";
-                        players[i]->invest();
+                        players[i]->invest(); // Call the invest method
                     }
-                    
+                    // Check if the mouse is over the show coins button (only for Spy)
                     if (players[i]->getRoll() == "Spy" && showCoinsButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-
-                        Player* target = selectPlayerForAction(players, players[i]);
+                        Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Show coinds on " << target->getName() << "!\n";
-                             displayCoins(target);
+                             displayCoins(target); // Show the coins of the selected target
                         }
                     }
+                    // Check if the mouse is over the prev arrest button (only for Spy)
                     if (players[i]->getRoll() == "Spy" && prevArrestButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                       
                     
-                         Player* target = selectPlayerForAction(players, players[i]);
+                         Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed PrevArrest on " << target->getName() << "!\n";
                             
-                            target->setPreventToArrest(true);
+                            target->setPreventToArrest(true); // Call the prev arrest method
+                            // update the status circles
                             updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
 
                         }
                     }
+                    // Check if the mouse is over the undo button (only for Governor, General, Judge)
                     if (players[i]->getRoll() == "Governor" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
-                         Player* target = selectPlayerForAction(players, players[i]);
+                         Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
                             
-                            players[i]->undo(*target);
+                            players[i]->undo(*target);// Call the undo method on the selected target (dinamic call from the virtual table)
                         }
                     }
+                    // Check if the mouse is over the undo button (only for Governor, General, Judge)
                     if (players[i]->getRoll() == "General" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                        
-                        Player* target = selectPlayerForAction(players, players[i]);
+                        Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
                             
-                            players[i]->undo(*target);
+                            players[i]->undo(*target);// Call the undo method on the selected target (dinamic call from the virtual table)
                         }
                     }
+                    // Check if the mouse is over the undo button (only for Governor, General, Judge)
                     if (players[i]->getRoll() == "Judge" && undoButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         
-                        Player* target = selectPlayerForAction(players, players[i]);
+                        Player* target = selectPlayerForAction(players, players[i]);// Select a target for the action
                         if (target != nullptr) {
                             std::cout << players[i]->getName() << " performed Undo on " << target->getName() << "!\n";
                             
-                            players[i]->undo(*target);
+                            players[i]->undo(*target);// Call the undo method on the selected target (dinamic call from the virtual table)
                         }
                     }
+                    // Check if the mouse is over the skip button
                     if (skipButtons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         std::cout << players[i]->getName() << " performed Skip!\n";
-                        players[i]->skipTurn();
+                        players[i]->skipTurn();// Call the skip method
                     }
                
 
                     
                 }
+                // Update the coin texts alive texts and status circles
                 updateCoinTexts(coinTexts, players);
                 updateAliveTexts(aliveTexts, players);
                 playerTurnText.setString("Player Turn: " + game.turn());
                 playerLastArrested.setString("Last Arrested: " + game.lastArrested());
                 updateStatusCircles(blockToBribeCircles, preventArrestCircles, sanctionedCircles, players);
                
-            }catch (const std::exception &e) {
+            }catch (const std::exception &e) { //catch any exception and display the error message
                 displayError(e.what());
                  playerTurnText.setString("Player Turn: " + game.turn());
             }
@@ -817,6 +893,7 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
 
     
         window.clear(sf::Color(240, 240, 240));
+        // Draw the title and all the player texts, buttons, and status circles
         window.draw(title);
         for (size_t i = 0; i < players.size(); ++i) {
             window.draw(aliveTexts[i]);
@@ -847,16 +924,20 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
             window.draw(legendPreventArrestText);
             window.draw(legendSanctioned);
             window.draw(legendSanctionedText);
+
+            // Draw the buttons and texts for the Baron unique actions
             if (players[i]->getRoll() == "Baron") {
                 window.draw(investButtons[i]);
                 window.draw(investTexts[i]);
             }
+            // Draw the buttons and texts for the Spy unique actions
             if (players[i]->getRoll() == "Spy") {
                 window.draw(showCoinsButtons[i]);
                 window.draw(showCoinsTexts[i]);
                 window.draw(prevArrestButtons[i]);
                 window.draw(prevArrestTexts[i]);
             }
+            // Draw the buttons and texts for the Governor, General, Judge unique actions
             if (players[i]->getRoll() == "Governor" || players[i]->getRoll() == "General" || players[i]->getRoll() == "Judge") {
                 window.draw(undoButtons[i]);
                 window.draw(undoTexts[i]);
@@ -869,10 +950,14 @@ legendSanctionedText.setPosition(1380, 250 + players.size() * 80 - 90);
 }
 
 
-
+/**
+ * @brief Displays an error message in a separate window.
+ * @param errorMessage The error message to display.
+ * @throws std::runtime_error if the font fails to load.
+ * This function creates a new window to show the error message and an "OK" button to close the window.
+ */
 void displayError(const std::string& errorMessage) {
     sf::RenderWindow errorWindow(sf::VideoMode(500, 200), "Error");
-
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
         std::cerr << "Failed to load font for error window\n";
@@ -897,9 +982,9 @@ void displayError(const std::string& errorMessage) {
             if (event.type == sf::Event::Closed)
                 errorWindow.close();
 
-            if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.type == sf::Event::MouseButtonPressed) { 
                 sf::Vector2i mousePos = sf::Mouse::getPosition(errorWindow);
-                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y)) { // Check if the button is clicked
                     errorWindow.close();
                 }
             }
@@ -914,6 +999,16 @@ void displayError(const std::string& errorMessage) {
     }
 }
 
+/**
+ * @brief Display the players that can be selected for an action.
+ * @param players Vector of Player pointers.
+ * @param currentPlayer Pointer to the current player.
+ * @return Pointer to the selected player or nullptr if no player is selected.
+ * @throws std::runtime_error if the font fails to load.
+ * This function creates a new window to show the players that can be selected for an action.
+ * It displays the players' names and rolls, and allows the user to select one of them.
+ * The selected player is returned, or nullptr if no player is selected.
+ */
 Player* selectPlayerForAction(const std::vector<Player*>& players, Player* currentPlayer) {
     sf::RenderWindow selectionWindow(sf::VideoMode(600, 400), "Select a Player");
     sf::Font font;
@@ -925,7 +1020,7 @@ Player* selectPlayerForAction(const std::vector<Player*>& players, Player* curre
     std::vector<sf::Text> buttonTexts;
     std::vector<Player*> selectablePlayers;
     for (size_t i = 0; i < players.size(); ++i) {
-        if (players[i] == currentPlayer || !players[i]->getIsAlived()) {
+        if (players[i] == currentPlayer || !players[i]->getIsAlived()) { // Skip the current player and dead players
             continue; 
         }
         sf::RectangleShape button(sf::Vector2f(400, 50));
@@ -949,7 +1044,7 @@ Player* selectPlayerForAction(const std::vector<Player*>& players, Player* curre
                 for (size_t i = 0; i < buttons.size(); ++i) {
                     if (buttons[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         selectionWindow.close();
-                        return selectablePlayers[i];
+                        return selectablePlayers[i]; // Return the selected player
                     }
                 }
             }
@@ -964,10 +1059,14 @@ Player* selectPlayerForAction(const std::vector<Player*>& players, Player* curre
     return nullptr;
 }
 
-void updateStatusCircles(std::vector<sf::CircleShape>& blockToBribeCircles,
-                         std::vector<sf::CircleShape>& preventArrestCircles,
-                         std::vector<sf::CircleShape>& sanctionedCircles,
-                         const std::vector<Player*>& players) {
+/**
+ * @brief Updates the status circles for each player based on their status.
+ * @param blockToBribeCircles Vector of CircleShape for Block to Bribe status.
+ * @param preventArrestCircles Vector of CircleShape for Prevent Arrest status.
+ * @param sanctionedCircles Vector of CircleShape for Sanctioned status.
+ * @param players Vector of Player pointers.
+ */
+void updateStatusCircles(std::vector<sf::CircleShape>& blockToBribeCircles,std::vector<sf::CircleShape>& preventArrestCircles,std::vector<sf::CircleShape>& sanctionedCircles,const std::vector<Player*>& players) {
     for (size_t i = 0; i < players.size(); ++i) {
         // Update Block to Bribe Circle
         if (players[i]->isBlockToBribe()) {
@@ -992,6 +1091,14 @@ void updateStatusCircles(std::vector<sf::CircleShape>& blockToBribeCircles,
     }
 }
 
+/**
+ * @brief Gives the Genral the option to save himself.
+ * @return true if the player wants to save himself, false otherwise.
+ * @throws std::runtime_error if the font fails to load.
+ * This function creates a new window to ask the player if they want to save themselves.
+ * It displays a message and two buttons: "Yes" and "No".
+ * The player can click on one of the buttons to make their choice.
+ */
 bool checkSavingGeneral(){
     sf::RenderWindow window(sf::VideoMode(400, 200), "Saving General");
     sf::Font font;
@@ -1030,11 +1137,11 @@ bool checkSavingGeneral(){
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 if (yesButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     window.close();
-                    return true;
+                    return true; // Player wants to save themselves
                 }
                 if (noButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     window.close();
-                    return false;
+                    return false; // Player does not want to save themselves
                 }
             }
         }
@@ -1050,6 +1157,13 @@ bool checkSavingGeneral(){
     return false; // Default return value if window is closed without selection
 }
 
+/**
+ * @brief Displays a "Game Over" window showing the winner's name.
+ * @param str The name of the winner.
+ * @throws std::runtime_error if the font fails to load.
+ * This function creates a new window to show the game over message and the winner's name.
+ * It displays a message and an "OK" button to close the window.
+ */
 void endGame(std::string str){
     sf::RenderWindow window(sf::VideoMode(400, 200), "Game Over");
     sf::Font font;
@@ -1058,7 +1172,7 @@ void endGame(std::string str){
         return;
     }
 
-    sf::Text text("The Winner is : " + str, font, 24);
+    sf::Text text("The Winner is : " + str, font, 24); //Update the text to show the winner
     text.setFillColor(sf::Color::Green);
     text.setPosition(70, 50);
 
@@ -1072,11 +1186,11 @@ void endGame(std::string str){
 
     while (window.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event)) { //Show the window and check for events
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.type == sf::Event::MouseButtonPressed) { // Check if the mouse is clicked
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 if (okButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     window.close();

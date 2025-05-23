@@ -62,7 +62,7 @@ namespace coup
         std::vector<std::string> curPlayers;
         for(size_t i=0; i<board.size(); i++){
             if(board[i]->getIsAlived() == true){
-                curPlayers.push_back(board[i]->getName());
+                curPlayers.push_back(board[i]->getName()); // Add only alive players
             }
         }
         return curPlayers;
@@ -70,11 +70,13 @@ namespace coup
 
     /**
      * @brief Removing a player frop game by adding him to the couped vector and decreasing the num of players by one.
-     */
+     * @param player The player to be removed.
+     * @throw std::runtime_error if the player is not found in the game.
+     * */
     void Game::removePlayer(Player* player){ 
         for(size_t i=0; i< board.size(); i++){
             if(player->getName()==board[i]->getName()){
-                setCoupedPlayers(player);
+                setCoupedPlayers(player); // Add the player to the couped vector
                 numOfPlayers--;
                 if(numOfPlayers==1){
                     winner();
@@ -82,7 +84,7 @@ namespace coup
                 return;
             }
         }
-        throw std::runtime_error("Player not found in the game.");
+        throw std::runtime_error("Player not found in the game."); 
 
     }
 
@@ -95,8 +97,8 @@ namespace coup
            return; // No need to proceed if there's only one player left
         }
         do {
-            playerTurn = (playerTurn + 1) % board.size();
-        } while (!board[playerTurn]->getIsAlived());
+            playerTurn = (playerTurn + 1) % board.size(); //move to the next player that is alive, allways need to move at lest one time
+        } while (!board[playerTurn]->getIsAlived()); 
     }
 
     /**
@@ -108,7 +110,7 @@ namespace coup
     }
 
     /**
-     * @brief Overload the << operator to print the game status.
+     * @brief Overload the << operator to print the game status for comfterbility.
      * @param os The output stream.
      * @param game The game object.
      * @return The output stream.
@@ -136,7 +138,7 @@ namespace coup
     std::string Game::winner(){
         int count=0;
         int index=-1;
-        for(size_t i=0;i<board.size();i++){
+        for(size_t i=0;i<board.size();i++){ //count the number of alive players
             if(board[i]->getIsAlived()==true){
                 index=i;
                 count++;

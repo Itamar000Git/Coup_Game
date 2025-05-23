@@ -58,9 +58,9 @@ public:
           preventToArrest(other.preventToArrest) {}
      
     /**
-     * @brief Assignment operator for the Player class.
-     * @param other The player to assign from.
-     * @return A reference to this player.
+     * @brief equal operator for the Player class.
+     * @param other The player to check equality with.
+     * @return A boolean indicating if the players are equal.
      */
     virtual bool operator==(Player &player){
         return name==player.name;
@@ -92,16 +92,19 @@ public:
   
            
             virtual int coins() const =0;//returns the number of coins the player has
-            virtual std::string getName()=0;
-            virtual std::string getRoll()=0;
-            virtual void undo(  Player &player)=0;
-            virtual void gather();
-            virtual void tax();
-            virtual void bribe();
-            virtual void arrest( Player &player);
-            virtual void sanction(Player &player);
-            virtual void coup( Player &player,bool gui=false);
-            virtual void invest(){}
+            virtual std::string getName()=0; //returns the name of the player
+            virtual std::string getRoll()=0; //returns the role of the player
+            
+            virtual void undo(  Player &player)=0; //undo the last move of the player (if its match to rhe role)
+            virtual void gather(); // gather 1 coins
+            virtual void tax(); // tax 2 coins (if its match to the role)
+            virtual void bribe(); // bribe with 3 coins an get 2 turns
+            virtual void arrest( Player &player); // steal 1 coins from the player
+            virtual void sanction(Player &player); // sanction the player , prevent him to gather ant tax
+            virtual void coup( Player &player,bool gui=false); // coup the player, remove him from the game
+            virtual void invest(){} // invest 3 coins and get 6 coins (if its match to the role)
+             virtual void skipTurn(); // skip the turn of the player (in case of lock)
+
             virtual void setIsBlocked(bool block)=0;
             virtual bool getIsBlocked()const=0;
             virtual  void setLastCoinNum(int num)=0;
@@ -120,25 +123,23 @@ public:
                 return false;
             }
             virtual bool getIsAlived()=0;
-            virtual void starter(){};
+            virtual void starter(){}; //function that dont do anything and override by the merchant
 
-            const std::vector<std::string>& getLastMove() const {
+            const std::vector<std::string>& getLastMove() const { //returns the last move of the player
                 return lastMove;
             }
-            const bool& isBlockToBribe() const{
+            const bool& isBlockToBribe() const{//returns if the player is blocked to bribe
                 return blockToBribe;
             }
-            virtual void skipTurn();
-
-            
-            virtual void setLastMove(std::string move){
+        
+            virtual void setLastMove(std::string move){//set the last move of the player
                 lastMove.push_back(move);
             }
-
-
-         
-
-           virtual ~Player(){}
+           virtual ~Player()
+           {
+                // Destructor for the Player class
+                // Clean up resources if needed
+           }
 
     };
 

@@ -41,33 +41,39 @@ namespace coup{
         return role;
      }
 
-    
+    /**
+     * @brief Undo the last move of the player if it was tax.
+     * @param player The player whose last move is to be undo.
+     * @throws std::runtime_error if the player is dead (both) or there is no last move to undo,
+     * if the last move is not tax, if the player has less than 2 coins.
+     */
     void Governor::undo( Player &player){
-        
-        if(player.getIsAlived()==false){
+        if(getIsAlived()==false){ //the player is dead
+            throw std::runtime_error("You cant coup a dead player");
+            return;
+        }
+        if(player.getIsAlived()==false){ //the other player is dead
             throw std::runtime_error("You cant undo a dead player");
             return;
         }
-        if(player.getLastMove().empty()){
+        if(this==&player){ //the player undo himself
+            throw std::runtime_error("You cant arrest yourself");
+        }
+        if(player.getLastMove().empty()){ //there is no last move to undo
             throw std::runtime_error("There is no last move to undo");
             return;
         }
         std::string last = player.getLastMove().back();
-        if(last!="tax"){
-            throw std::runtime_error("Judge can only undo bribe");
+        if(last!="tax"){ //the last move is not tax
+            throw std::runtime_error("Governor can only undo tax");
             return;
         }
         if(player.getRoll()=="Baron"){ // undo tax for baron is different
-
-            Baron &baron = static_cast<Baron&>(player);
-            int num = baron.getLastCoinNum(); 
-            if(num<2){
-                throw std::runtime_error("Player dont have enough coins");
-                return;
-            }
+            int num = player.getLastCoinNum(); //get the last coins number
+            
             std::cout<<"num is: "<<num<<std::endl;
-            baron.setLastCoinNum(num);
-            std::cout<<"baron coins: "<<baron.coins()<<std::endl;
+            player.setLastCoinNum(num); //set the last coins number to the baron
+            std::cout<<"baron coins: "<<player.coins()<<std::endl;
         }
         else{
             if(player.coins()<2){
@@ -84,27 +90,29 @@ namespace coup{
     }
 
     /**
-     * The governor can tax 3 coins from the bank
+     * @brief Override the Tax method add 3 coins to the player if he is governor.
+     * @throws std::runtime_error if its not the player's turn, if the player has too many coins,
+     * if the player is blocked by bribe or if the player is blocked.
      */
     void Governor::tax(){
 
-        if(game.turn()!=name){
+        if(game.turn()!=name){ //this is not the player's turn
             throw std::runtime_error("This is not your turn");
             return;
         }
-        if(coinsNum>=10){
+        if(coinsNum>=10){ //the player has more than 10 coins
             throw std::runtime_error("You have too many coins you need to coup");
             return;
         }
-        if(isBlocked==true){
+        if(isBlocked==true){ //the player is blocked
             throw std::runtime_error("You are blocked");
             return;
         }
-        if(preventToArrest==true){
+        if(preventToArrest==true){ //if the player is blocked by arrest we remove the block
             setPreventToArrest(false);
         }
 
-        if(blockToBribe==true){
+        if(blockToBribe==true){ //if the player is blocked by bribe we remove the block and set the free moves to 0 and move to the next player
             setPreventToBribe(false);
             game.nextTurn();
             freeMoves=0;
@@ -112,7 +120,7 @@ namespace coup{
             throw std::runtime_error("You are blocked by bribe");
             return;
         }
-        coinsNum+=3; 
+        coinsNum+=3; //tax 3 coins from the bank with governor
         std::cout <<"tax with:" << name<< " that is "<< role<<std::endl;
         std::cout<<"Num of coins is: "<<coinsNum<<std::endl;
         if(freeMoves>0){
