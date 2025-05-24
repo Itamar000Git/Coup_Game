@@ -8,7 +8,6 @@ Game logic includes error handling, turn management, imlement the game rules.
 
 ---
 
-
 ## Features
 
 ### Player Management
@@ -27,17 +26,18 @@ Game logic includes error handling, turn management, imlement the game rules.
   - **Baron**: Invest coins to double them.
   - **General**: Undo a coup.
   - **Judge**: Undo a bribe.
+  - **Merchant**:  Have a bonus with any action.
 - **Special States**:
   - **Sanction**: Blocks a player from performing actions.
   - **Arrest**: Removes coins from a player or blocks them.
   - **Coup**: Eliminates a player from the game.
-- All actions validate legality:
+- All actions validate the players state before execution:
   - Checks if it's the player's turn.
   - Ensures the player has enough coins.
   - Verifies the target is alive and valid.
   - Make sure that the player preforming the actions is alive.
   - make sure there ins't any block that can prevent activate that action.
-  - handeling differnt roles acting in a differernt way with the same actions.
+  - Handeling a different roles acting in a differernt way with the same actions.
 - Throws clear exceptions for illegal actions, such as acting out of turn or targeting dead players.
 
 ### Graphical User Interface (SFML)
@@ -49,16 +49,6 @@ Game logic includes error handling, turn management, imlement the game rules.
   - Show player turn name, and last arrested player name.
   - Show if there is any sanction , block to bride or prevent arrest on any player.
 - Interactive interface with buttons and input fields.
-
-
-### Edge Case Testing
-- Comprehensive unit tests using `doctest` for all edge cases.
-- Handles invalid actions and states with clear error messages (`std::runtime_error`) and a clear text after.
-
-### Multi-Player Support
-- Supports 2 to 6 players.
-- Enforces unique player names and all game rules for any player count.
-
 
 ---
 
@@ -113,8 +103,14 @@ Coup_game/
 │   ├── Baron.hpp
 │   ├── General.hpp
 │   ├── Judge.hpp
+│   ├── main.hpp
 │   └── Merchant.hpp
 ├── OBJ/
+├── Demo.cpp
+├── test.cpp
+├── main.cpp
+├── doctest.h
+├── README.md
 └── makefile
 ```
 
@@ -180,7 +176,7 @@ Coup_game/
   - `starter()`: Overrides the base gather method to include unique logic for the Merchant role.
 
 ---
-<!-- 
+
 ## Tests and Edge Cases
 
 The project includes extensive tests to ensure the game behaves correctly in all scenarios.  
@@ -189,48 +185,75 @@ Here is a summary of the tests performed in `test.cpp`:
 ### Game Initialization
 1. Creating a game with fewer than 2 or more than 6 players.
 2. Adding a player with a duplicate name.
-3. Removing players and checking turn order.
+3. Trying to get the winner before the game is over.
+4. Removing a player and checking the turn order.
+5. Checking the turn order.
 
-### Turn and Action Logic
-1. Ensuring only the correct player can act.
-2. Skipping dead players in turn order.
-3. Preventing actions out of turn or on dead players.
+### Player Actions
+1. Validating that players can only perform actions on their turn.
+2. Trying to perform gather or tax actions after being sanctioned.
+3. Trying to preform action that is not coup with more than 10 coins.
+4. Ensuring players cannot perform actions when dead.
+5. Validating that players cannot perform actions on dead players.
 
 ### Role Abilities
-1. Testing each unique action for every role:
-   - Governor: Undo tax, sanction.
-   - Spy: Watch coins, prevent arrest.
-   - Baron: Invest, bribe.
-   - General: Undo coup.
-   - Judge: Undo bribe.
-   - Merchant: Gather with bonus.
-2. Validating that sanctions and arrests block actions as intended.
-3. Ensuring undo actions work only when allowed.
 
-### Special States
-1. Handling of sanction, arrest, and coup.
-2. Preventing illegal state transitions (e.g., sanctioning an already sanctioned player).
-
-### Game End and Winner Detection
-1. Correctly identifying the winner.
-2. Preventing winner queries before the game is over.
-
-### Memory and Resource Management
-1. Tests can be run under valgrind to ensure no memory leaks.
+### Spy Actions
+1. Testing the Spy's ability to watch another player's coins.
+2. Ensuring the Spy can prevent another player from being arrested.
+3. Validate that the same player cannot be arrested twice in a row.
+### Baron Actions
+1. Testing the Baron's ability to invest coins without enough coins.
+2. Checking if the invest method works correctly.
+3. Checking if the tax method works correctly for the Baron.
+### Governor Actions
+ 1. Checking if the tax method works correctly for governor.
+ 2. Checking if the undo method works correctly for governor.
+ 3. Checking if the undo method works correctly when there is not enough coins.
+ 4. Checking if the undo method works correctly when the last move is not tax.
+### Merchant Actions
+1. Testing the Merchant's ability to gather coins with a bonus.
+2. Checking if merchant pay 2 coins after arrest.
+### Judge Actions
+1. Testing the Judge's ability to undo a bribe.
+2. Checking if sanction a judge cost 4 coins.
+3. Checking if the bribe method blocked after undo.
+### General Actions
+1. Testing the General's ability to undo a coup.
+2. Checking if the arrest method not effective on general
 
 ---
 
 ## Example Edge Cases
-1. **Invalid Actions**:
-   - Acting out of turn.
-   - Targeting dead players.
-   - Performing actions without enough coins.
-2. **Undo Logic**:
-   - Undoing actions when not allowed (e.g., undoing a non-tax action).
-3. **Special States**:
-   - Sanctioning a player already sanctioned.
-   - Arresting a dead player.
-4. **Game End**:
-   - Attempting to act after the game is over.
-5. **Turn Progression**:
-   - Skipping dead players and ensuring the c -->
+1. **Soft Locks**:
+   - Players unable to perform actions because they are blocked and prevented to arrest and do not have enough coins.
+   - Players with no valid actions left can skip their turn.
+
+2. **Multiple Bribes**:
+   - Players can Bribe multiple times, but the it's not a profitable action.
+
+3. **Dead Players**:
+   - Ensuring dead players cannot perform actions.
+   - Skipping dead players in turn order.
+   - Preventing actions on dead players.
+
+4. **Turn Order**:
+   - Ensuring the game correctly continues with the next alive player.
+
+5. **Invalid Undo Actions**:
+   - Ensuring that undo actions are only performed when valid.
+
+6. **General Self-Undo**:
+   - Ensuring the General can save themselves from a coup if they have enough coins.
+
+7. **Self-Action**:
+   - Ensuring players cannot perform actions on themselves.
+  
+8. **No Coins**:
+   - Players with no coins cannot perform certain actions.
+
+9. **Undo After Coup**:
+   - Ensuring that undo actions cannot be performed after a coup.
+
+10. **Multiple Undo Actions**:
+    - Ensuring that only the last action can be undone, and that it is valid.
