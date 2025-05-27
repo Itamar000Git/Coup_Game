@@ -223,6 +223,15 @@ namespace coup
         if(this==&player){ //the player is sanctioning himself
             throw std::runtime_error("You cant sanction yourself");
         }        
+        int num=coins();
+        int lim=3;
+        if(player.getRoll()=="Judge"){ //for sanction a judge we need to pay 4 coins instead of 3
+            lim=4;
+        }
+        if(num<lim){ //the player has less than 3 or 4 coins(depends on the role)
+            throw std::runtime_error("You dont have enough coins");
+        }
+       
         if(preventToArrest==true){
             setPreventToArrest(false);
         }
@@ -238,16 +247,7 @@ namespace coup
         }
         
         starter(); //function that add a coin to the player if he is a merchant with more than 2 coins
-        int num=coins();
-        int lim=3;
-        if(player.getRoll()=="Judge"){ //for sanction a judge we need to pay 4 coins instead of 3
-            lim=4;
-        }
-        if(num<lim){ //the player has less than 3 or 4 coins(depends on the role)
-            throw std::runtime_error("You dont have enough coins");
-
-        }
-       
+     
         coinsNum=coinsNum-lim; //pay 3 or 4 coins to the bank
         player.setIsBlocked(true); //set the player as blocked
 
@@ -335,6 +335,9 @@ namespace coup
         if(coinsNum>=10){
             throw std::runtime_error("You have too many coins you need to coup");
             
+        }
+        if(preventToArrest==false||isBlocked==false||coinsNum>=3){
+            throw std::runtime_error("You can use skip just in spatial event!");
         }
         if(preventToArrest==true){
             setPreventToArrest(false);

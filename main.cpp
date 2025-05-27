@@ -873,8 +873,6 @@ void displayCoupBoard(const std::vector<Player*>& players, Game &game) {
                         players[i]->skipTurn();// Call the skip method
                     }
                
-
-                    
                 }
                 // Update the coin texts alive texts and status circles
                 updateCoinTexts(coinTexts, players);

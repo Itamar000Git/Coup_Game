@@ -124,7 +124,7 @@ TEST_CASE("Player Actions") {
             judge.gather();
             merchant.gather();
         }
-        gov.skipTurn();
+        gov.gather();
         
         CHECK(spy.coins() == 10); // Spy has 10 coins
         CHECK_THROWS_AS(spy.gather(), std::runtime_error); // Have to coup
