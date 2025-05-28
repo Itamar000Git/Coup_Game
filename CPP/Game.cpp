@@ -78,9 +78,7 @@ namespace coup
             if(player->getName()==board[i]->getName()){
                 setCoupedPlayers(player); // Add the player to the couped vector
                 numOfPlayers--;
-                if(numOfPlayers==1){
-                    winner();
-                }
+                
                 return;
             }
         }
