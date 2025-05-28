@@ -336,9 +336,23 @@ namespace coup
             throw std::runtime_error("You have too many coins you need to coup");
             
         }
+        bool canSkip=false;
+
         if(preventToArrest==false||isBlocked==false||coinsNum>=3){
-            throw std::runtime_error("You can use skip just in spatial event!");
+            if(preventToArrest==false){
+                 std::vector<Player*> tmp=game.playersVector();
+                for(int i=0 ;i<tmp.size(); i++){
+                    if(tmp[i]!=this &&tmp[i]->getIsAlived()&&tmp[i]->coins()<3&&( tmp[i]->getName()!=game.lastArrested()|| tmp[i]->canBeArrest())){
+                        throw std::runtime_error("You can use skip just in special event!");
+                    }
+
+                }
+            }
+            else{
+            throw std::runtime_error("You can use skip just in special event!");
+            }
         }
+
         if(preventToArrest==true){
             setPreventToArrest(false);
         }

@@ -633,9 +633,31 @@ TEST_CASE("Egde Cases"){
         CHECK_THROWS_AS(gov.undo(spy), std::runtime_error); //Gov can't undo again
         
      }
-        
+     
 }
-
+TEST_CASE(" Test skip bottom") {
+    coup::Game game;
+    General general(game, "gen_1");
+    Baron baron(game, "bar_1");
+    Spy spy(game, "spy_1");
+    for(int i = 0; i <= 6; ++i) {
+        general.gather();
+        baron.gather();
+        spy.gather();
+    }
+    general.gather();
+    baron.coup(spy);
+    general.gather();
+    baron.arrest(general);
+    general.sanction(baron);
+    
+    
+    CHECK_THROWS_AS(baron.arrest(general), std::runtime_error); 
+    CHECK_THROWS_AS(baron.sanction(general), std::runtime_error); 
+    
+    baron.skipTurn(); // General skips his turn after being sanctioned
+    CHECK(game.turn()=="gen_1");
+}
 
 
 

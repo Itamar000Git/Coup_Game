@@ -34,6 +34,10 @@ namespace coup
             int& getNumOfPlayers();
             std::string turn();
             std::vector<std::string> players();
+            std::vector<Player*> playersVector()  { // return the players vector
+                return board;
+            }
+
 
             /**
              * * @brief Add a player to the coupedPlayers vector

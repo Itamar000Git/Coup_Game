@@ -82,6 +82,13 @@ namespace coup{
                 bool getIsBlocked()const{
                     return isBlocked;
                 }
+                bool canBeArrest(){
+                    if(coinsNum>=2){
+                    return true;
+                }
+                 
+                return false;
+                }
                  ~Merchant(){}
         
     };

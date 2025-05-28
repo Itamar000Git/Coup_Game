@@ -135,6 +135,13 @@ public:
             virtual void setLastMove(std::string move){//set the last move of the player
                 lastMove.push_back(move);
             }
+            virtual bool canBeArrest(){
+                if(coinsNum>=1){
+                    return true;
+                }
+                 
+                return false;
+            }
            virtual ~Player()
            {
                 // Destructor for the Player class
